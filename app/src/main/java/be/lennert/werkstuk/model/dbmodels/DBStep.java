@@ -6,6 +6,7 @@ import androidx.room.PrimaryKey;
 
 import java.util.List;
 
+import be.lennert.werkstuk.model.apimodels.Step;
 import be.lennert.werkstuk.model.interfaces.IIngredient;
 import be.lennert.werkstuk.model.interfaces.IStep;
 
@@ -29,6 +30,10 @@ public class DBStep implements IStep {
         this.number = number;
         this.step = step;
         this.recipeId = recipeId;
+    }
+
+    public DBStep(Step s,int recipeId){
+        this(1,s.getNumber(),s.getStep(),recipeId);
     }
 
     public int getStepId() {

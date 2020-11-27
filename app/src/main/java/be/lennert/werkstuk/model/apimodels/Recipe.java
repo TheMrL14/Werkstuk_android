@@ -506,10 +506,10 @@ public class Recipe implements IDetailedRecipe<String>  {
 
     @Override
     public List<IIngredient> getIngredients() {
-        List<IIngredient> ingredients = new ArrayList<IIngredient>();
+        List<IIngredient> returnIngredients = new ArrayList<IIngredient>();
 
-        for(ExtendedIngredient i : extendedIngredients)ingredients.add((IIngredient<String>) i);
-        return ingredients;
+        for(ExtendedIngredient i : extendedIngredients)returnIngredients.add((IIngredient<String>) i);
+        return returnIngredients;
     }
 
     @Override

@@ -77,7 +77,7 @@ public class RecipeRepository {
         @Override
         protected Boolean doInBackground(final Integer... params) {
              int id = mAsyncTaskDao.recipeIsSaved(params[0]);
-             return true;
+             return id !=0;
         }
 
         @Override

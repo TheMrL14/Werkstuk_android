@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey;
 
 import java.util.List;
 
+import be.lennert.werkstuk.model.apimodels.Ingredient;
 import be.lennert.werkstuk.model.apimodels.Recipe;
 import be.lennert.werkstuk.model.interfaces.IDetailedRecipe;
 import be.lennert.werkstuk.model.interfaces.IIngredient;
@@ -33,19 +34,21 @@ public class DBRecipe implements IDetailedRecipe<byte[]> {
     public DBRecipe() {
     }
 
-    public DBRecipe(int id, int portions, String title,String imagePath) {
+    public DBRecipe(int id, int portions, String title, String imagePath, List<IIngredient> ingredients,List<IStep>steps ) {
         this.rId = id;
         this.portions = portions;
         this.title = title;
         this.imagePath = imagePath;
+        this.ingredients = ingredients;
+        this.steps = steps;
     }
 
     public DBRecipe(Recipe r,String imagePath){
-        this(r.getId(),1,r.getTitle(),imagePath);
+        this(r.getId(),1,r.getTitle(),imagePath,r.getIngredients(), r.getSteps());
     }
 
-    public DBRecipe(IRecipe r, String imagePath){
-        this(r.getId(),1,r.getTitle(),imagePath);
+    public DBRecipe(IDetailedRecipe r, String imagePath){
+        this(r.getId(),1,r.getTitle(),imagePath,r.getIngredients(), r.getSteps());
     }
 
 

@@ -35,6 +35,8 @@ public abstract class RecipeDAO {
     public void insertFull(DBRecipe recipe){
         if(recipe.getSteps() != null && recipe.getIngredients() != null){
             insertIngredients(recipe, recipe.getIngredients());
+            insertSteps(recipe, recipe.getSteps());
+            insertRecipe(recipe);
         }
     };
 
