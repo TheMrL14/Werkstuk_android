@@ -60,17 +60,19 @@ public class DetailActivity extends AppCompatActivity {
         recipeViewModel = ViewModelProviders.of(this).get(RecipeViewModel.class);
 
         setContentView(R.layout.activity_recipe_detail);
-
         getSupportActionBar().hide();
 
+
+        //Get DATA from previous page
         Intent intent = getIntent();
         isOnline = intent.getBooleanExtra(CONNECTION,false);
         recipeId = intent.getIntExtra(MainFragmentSearch.RECIPE_ID,0);
 
+        //Set displayed recipe
         setRecipeById(recipeId);
 
 
-
+        //switch btn settings
         switchBtn = (MultiStateToggleButton) findViewById(R.id.switch_rec_ing);
         switchBtn.enableMultipleChoice(false);
 
@@ -84,7 +86,9 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void setRecipeById(int id){
+        //Check if using an Online or Offline Recipe
         if(isOnline){
+            //get recipe from API
             FOODAPI.getRecipeById(id, new APIListener<Recipe>() {
                 @Override
                 public void call(Response<Recipe> response) {
@@ -98,24 +102,26 @@ public class DetailActivity extends AppCompatActivity {
         ;
     }
 
-    private void loadView() {
+    private void loadView() {//Put Data in View
         TextView txtTitle = (TextView) findViewById(R.id.txtRecipeTitle);
         ImageView imgRecipe = (ImageView) findViewById(R.id.imgRecipe);
         Picasso.get().load((String) recipe.getImage()).into(imgRecipe);
         txtTitle.setText(recipe.getTitle());
+        //set main fragment to isViewIngredients (default true = default Display the ingredients)
         setMainFragment(isViewIngredients? multiStateToggleChoices.INGREDIENTS : multiStateToggleChoices.RECIPE);
+        //Check if recipe is saved in Local Database
         recipeViewModel.isRecipeSaved(recipe.getId(),new TaskListener(){
-
             @Override
             public void onTaskCompleted(boolean b) {
-                isFavourited = false;
+                isFavourited = b;
+                //fill or unfill heart
                 setHeartButton();
             }
         });
 
     }
 
-
+    //change fragment on the page
     private void setMainFragment(multiStateToggleChoices toggle){
         Fragment selectedFragment = null;
         switch (toggle){
@@ -144,14 +150,20 @@ public class DetailActivity extends AppCompatActivity {
         switchBtn.setStates(new boolean[]{bool,!bool});
     }
 
+    // Heart button is pressed
+    //uploads/deletes from database
     public void addRemoveFavourite(View view) {
         isFavourited = !isFavourited;
         if(isFavourited){
+            //First download Image
+            //TODO optimise Async flow ( download image seperate from uploading recipe)
             new  DownloadImage(recipe.getTitle().replaceAll("\\s+","")  +".jpeg", new TaskListener() {
                 @Override
                 public void onTaskCompleted(boolean b) {
                     File file = getApplicationContext().getFileStreamPath(recipe.getTitle().replaceAll("\\s+","") +".jpeg");
                     String imageFullPath = file.getAbsolutePath();
+
+                    //use image Path to save the recipe
                     recipeViewModel.insert(new DBRecipe(recipe, imageFullPath), new TaskListener() {
                         @Override
                         public void onTaskCompleted(boolean b) {
@@ -169,14 +181,14 @@ public class DetailActivity extends AppCompatActivity {
         }
 
     }
-
+    //fill / unfill heart
     private void setHeartButton(){
         final ImageButton heartBtn = (ImageButton) findViewById(R.id.btnFavourite);
         if(isFavourited) heartBtn.setImageResource(R.drawable.favourite_fill);
         else heartBtn.setImageResource(R.drawable.favourite);
     }
 
-
+    //Enum for Multe state button ( uses int value )
     enum multiStateToggleChoices{
         //https://codingexplained.com/coding/java/enum-to-integer-and-integer-to-enum
         INGREDIENTS(0),
@@ -204,6 +216,8 @@ public class DetailActivity extends AppCompatActivity {
 
     }
 
+    //used for downloading an image and save locally
+    //in combination with static funcs from ImageUtils
     private class DownloadImage extends AsyncTask<String,Void, Bitmap>{
 
         private String fileName;
