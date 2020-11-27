@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Werkstuk</string>
+    <string name="Recipe" translatable="false">Recept</string>
+    <string name="Ingredients" translatable="false">Ingredienten</string>
+    <array name="Recipe_Ingredients">
+        <item>Recepten</item>
+        <item>Ingredienten</item>
+    </array>
+    <string name="NoSaved">Geen recepten opgeslagen</string>
+    <string name="NoFound">Geen recepten gevonden, Hier Is Een Grapje</string>
+    <string name="StartSearching">Start Zoeken, Maar geniet eerst van een grapje:</string>
+</resources>

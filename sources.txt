@@ -1,0 +1,6 @@
+API Calls:
+https://www.androidauthority.com/use-web-api-android-1152645/
+https://medium.com/@sontbv/retrofit-2-for-beginners-creating-an-android-api-client-3c4370e1118
+
+Image to Bitmap:
+https://stackoverflow.com/questions/37060782/cannot-convert-url-to-bitmap-in-android

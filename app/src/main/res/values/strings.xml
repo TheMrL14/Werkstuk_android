@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Werkstuk</string>
+    <string name="Recipe">Recipe</string>
+    <string name="Ingredients">Ingredients</string>
+
+    <array name="Recipe_Ingredients">
+        <item>Ingredients</item>
+        <item>Recipe</item>
+    </array>
+    <string name="NoSaved">No Recipes Saved</string>
+    <string name="NoFound">No Recipes Found, Here Is A Joke</string>
+    <string name="StartSearching">Start Searching For Recipes, But First Enjoy a joke:</string>
+    <!-- TODO: Remove or change this placeholder text -->
+
+</resources>
