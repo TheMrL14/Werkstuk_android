@@ -154,32 +154,38 @@ public class DetailActivity extends AppCompatActivity {
     //uploads/deletes from database
     public void addRemoveFavourite(View view) {
         isFavourited = !isFavourited;
-        if(isFavourited){
-            //First download Image
-            //TODO optimise Async flow ( download image seperate from uploading recipe)
-            new  DownloadImage(recipe.getTitle().replaceAll("\\s+","")  +".jpeg", new TaskListener() {
+        if(isFavourited){uploadRecipe();}
+        else{
+            //Delete from database
+            recipeViewModel.delete(new DBRecipe(recipe, ""), new TaskListener() {
                 @Override
                 public void onTaskCompleted(boolean b) {
-                    File file = getApplicationContext().getFileStreamPath(recipe.getTitle().replaceAll("\\s+","") +".jpeg");
-                    String imageFullPath = file.getAbsolutePath();
-
-                    //use image Path to save the recipe
-                    recipeViewModel.insert(new DBRecipe(recipe, imageFullPath), new TaskListener() {
-                        @Override
-                        public void onTaskCompleted(boolean b) {
-                            setHeartButton();
-                            recipeViewModel.getAllRecipes();
-                        }
-                    });
-
+                    setHeartButton();
                 }
-            }).execute((String) recipe.getImage());
-
-
-        }else{
-
+            });
+            //Delete image
+            final String imagePath = recipe.getTitle().replaceAll("\\s+","")  +".jpeg";
+            File file = getApplicationContext().getFileStreamPath(imagePath);
+            file.delete();
         }
 
+    }
+
+    private void uploadRecipe(){
+        final String imagePath = recipe.getTitle().replaceAll("\\s+","")  +".jpeg";
+        //TODO optimise Async flow ( download image seperate from uploading recipe)
+        new  DownloadImage(imagePath, new TaskListener() {
+            @Override
+            public void onTaskCompleted(boolean b) {
+                File file = getApplicationContext().getFileStreamPath(imagePath);
+                String imageFullPath = file.getAbsolutePath();
+            }
+        }).execute((String) recipe.getImage());
+
+        recipeViewModel.insert(new DBRecipe(recipe, imagePath), new TaskListener() {
+            @Override
+            public void onTaskCompleted(boolean b) {setHeartButton();}
+        });
     }
     //fill / unfill heart
     private void setHeartButton(){

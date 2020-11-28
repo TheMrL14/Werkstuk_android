@@ -31,9 +31,9 @@ public class RecipeRepository {
         new insertAsyncTask(recipeDAO,l).execute(r);
     }
 
-    public void isRecipeSaved(int id, TaskListener l){
-        new isRecipeSavedAsyncTask(recipeDAO,l).execute(id);
-    }
+    public void isRecipeSaved(int id, TaskListener l){new isRecipeSavedAsyncTask(recipeDAO,l).execute(id);}
+
+    public void deleteRecipe(DBRecipe r, TaskListener l){new deleteAsyncTask(recipeDAO,l).execute(r);}
 
     private static class insertAsyncTask extends AsyncTask<DBRecipe, Void, Void> {
 
@@ -87,7 +87,30 @@ public class RecipeRepository {
         }
     }
 
+    private static class deleteAsyncTask extends AsyncTask<DBRecipe, Void, Void> {
 
+        private RecipeDAO mAsyncTaskDao;
+
+        TaskListener listener;
+
+        deleteAsyncTask(RecipeDAO dao, TaskListener listener)
+        {
+            mAsyncTaskDao = dao;
+            this.listener = listener;
+        }
+
+        @Override
+        protected Void doInBackground(final DBRecipe... params) {
+            mAsyncTaskDao.delete(params[0]);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            listener.onTaskCompleted(true);
+        }
+    }
 
 }
 

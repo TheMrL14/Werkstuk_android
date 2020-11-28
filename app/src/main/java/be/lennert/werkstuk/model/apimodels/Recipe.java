@@ -12,7 +12,7 @@ import be.lennert.werkstuk.model.interfaces.IDetailedRecipe;
 import be.lennert.werkstuk.model.interfaces.IIngredient;
 import be.lennert.werkstuk.model.interfaces.IStep;
 
-public class Recipe implements IDetailedRecipe<String>  {
+public class Recipe implements IDetailedRecipe  {
 
     @SerializedName("vegetarian")
     @Expose

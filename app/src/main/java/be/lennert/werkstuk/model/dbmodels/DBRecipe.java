@@ -15,15 +15,15 @@ import be.lennert.werkstuk.model.interfaces.IRecipe;
 import be.lennert.werkstuk.model.interfaces.IStep;
 
 @Entity(tableName = "recipes")
-public class DBRecipe implements IDetailedRecipe<byte[]> {
+public class DBRecipe implements IDetailedRecipe {
     @PrimaryKey
     private int rId;
     private int portions;
     private String title;
     @Ignore
-    private byte[] image;
+    private byte[] imageByte;
 
-    private String imagePath;
+    private String image;
 
     @Ignore
     private List<IIngredient> ingredients;
@@ -34,11 +34,11 @@ public class DBRecipe implements IDetailedRecipe<byte[]> {
     public DBRecipe() {
     }
 
-    public DBRecipe(int id, int portions, String title, String imagePath, List<IIngredient> ingredients,List<IStep>steps ) {
+    public DBRecipe(int id, int portions, String title, String image, List<IIngredient> ingredients,List<IStep>steps ) {
         this.rId = id;
         this.portions = portions;
         this.title = title;
-        this.imagePath = imagePath;
+        this.image = image;
         this.ingredients = ingredients;
         this.steps = steps;
     }
@@ -85,11 +85,11 @@ public class DBRecipe implements IDetailedRecipe<byte[]> {
     }
 
     @Override
-    public byte[] getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(byte[] image) {
+    public void setImage(String image) {
         this.image = image;
     }
 
@@ -113,11 +113,11 @@ public class DBRecipe implements IDetailedRecipe<byte[]> {
         this.steps = steps;
     }
 
-    public String getImagePath() {
-        return imagePath;
+    public byte[] getImageByte() {
+        return imageByte;
     }
 
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
+    public void setImageByte(byte[] imageByte) {
+        this.imageByte = imageByte;
     }
 }

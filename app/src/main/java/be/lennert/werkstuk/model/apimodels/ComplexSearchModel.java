@@ -3,7 +3,7 @@ import com.google.gson.annotations.SerializedName;
 
 import be.lennert.werkstuk.model.interfaces.IRecipe;
 
-public class ComplexSearchModel implements IRecipe<String> {
+public class ComplexSearchModel implements IRecipe {
     @SerializedName("id")
     private int id;
     @SerializedName("title")

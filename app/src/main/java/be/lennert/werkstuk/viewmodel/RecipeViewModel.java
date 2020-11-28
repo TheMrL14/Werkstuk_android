@@ -30,4 +30,6 @@ public class RecipeViewModel extends AndroidViewModel {
     public void insert(DBRecipe r,TaskListener l){repo.insert(r,l);}
 
     public void isRecipeSaved(int id,TaskListener l){repo.isRecipeSaved(id, l);}
+
+    public void delete(DBRecipe r,TaskListener l ){repo.deleteRecipe(r,l);}
 }

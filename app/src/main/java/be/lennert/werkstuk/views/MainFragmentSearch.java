@@ -56,7 +56,7 @@ public class MainFragmentSearch extends Fragment implements ListViewAdapter.List
                     public void call(Response<ResponseWrapper> response) {
                         recipes = new ArrayList<IRecipe>();
                         List<ComplexSearchModel> responseBody = response.body().getResponse();
-                        for (ComplexSearchModel recipe: responseBody) recipes.add((IRecipe<String>) recipe);
+                        for (ComplexSearchModel recipe: responseBody) recipes.add((IRecipe) recipe);
                         loadView();
                     }
                 });
