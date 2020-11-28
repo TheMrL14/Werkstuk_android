@@ -25,15 +25,14 @@ public class DBStep implements IStep {
     public DBStep() {
     }
 
-    public DBStep(int stepId, int number, String step, int recipeId) {
-        this.stepId = stepId;
+    public DBStep(int number, String step, int recipeId) {
         this.number = number;
         this.step = step;
         this.recipeId = recipeId;
     }
 
-    public DBStep(Step s,int recipeId){
-        this(1,s.getNumber(),s.getStep(),recipeId);
+    public DBStep(IStep s,int recipeId){
+        this(s.getNumber(),s.getStep(),recipeId);
     }
 
     public int getStepId() {

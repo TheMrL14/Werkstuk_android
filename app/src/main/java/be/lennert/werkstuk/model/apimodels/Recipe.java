@@ -508,7 +508,7 @@ public class Recipe implements IDetailedRecipe<String>  {
     public List<IIngredient> getIngredients() {
         List<IIngredient> returnIngredients = new ArrayList<IIngredient>();
 
-        for(ExtendedIngredient i : extendedIngredients)returnIngredients.add((IIngredient<String>) i);
+        for(ExtendedIngredient i : extendedIngredients)returnIngredients.add((IIngredient) i);
         return returnIngredients;
     }
 

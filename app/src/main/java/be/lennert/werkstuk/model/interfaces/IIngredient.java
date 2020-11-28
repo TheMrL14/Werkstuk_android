@@ -1,7 +1,9 @@
 package be.lennert.werkstuk.model.interfaces;
 
-public interface IIngredient<T> {
+public interface IIngredient {
     String getName();
+    double getAmount();
+    String GetUnit();
     String getMetricAmount(int servings);
-    T getImage();
+    String getImage();
 }

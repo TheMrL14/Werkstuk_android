@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 import be.lennert.werkstuk.model.interfaces.IIngredient;
 import be.lennert.werkstuk.utils.StringUtils;
 
-public class ExtendedIngredient implements IIngredient<String> {
+public class ExtendedIngredient implements IIngredient {
 
     @SerializedName("id")
     @Expose
@@ -52,13 +52,13 @@ public class ExtendedIngredient implements IIngredient<String> {
 
     /**
      * No args constructor for use in serialization
-     * 
+     *
      */
     public ExtendedIngredient() {
     }
 
     /**
-     * 
+     *
      * @param image
      * @param amount
      * @param original
@@ -156,7 +156,12 @@ public class ExtendedIngredient implements IIngredient<String> {
     }
 
     public double getAmount() {
-        return amount;
+        return measures.getMetric().getAmount();
+    }
+
+    @Override
+    public String GetUnit() {
+        return measures.getMetric().getUnitShort();
     }
 
     public void setAmount(double amount) {

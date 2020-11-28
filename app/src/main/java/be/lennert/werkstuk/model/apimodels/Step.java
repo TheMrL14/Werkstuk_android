@@ -70,7 +70,7 @@ public class Step implements IStep {
     public List<IIngredient> getIngredients() {
         List<IIngredient> returnIngredients = new ArrayList<IIngredient>();
 
-        for(ExtendedIngredient i : ingredients)returnIngredients.add((IIngredient<String>) i);
+        for(ExtendedIngredient i : ingredients)returnIngredients.add((IIngredient) i);
         return returnIngredients;
     }
 

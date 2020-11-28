@@ -3,29 +3,34 @@ package be.lennert.werkstuk.model.dbmodels;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import be.lennert.werkstuk.model.apimodels.ExtendedIngredient;
 import be.lennert.werkstuk.model.interfaces.IIngredient;
 import be.lennert.werkstuk.utils.StringUtils;
 
 @Entity(tableName = "ingredients")
-public class DBIngredient implements IIngredient<byte[]> {
+public class DBIngredient implements IIngredient {
     @PrimaryKey(autoGenerate = true)
     private int ingredientId;
     private String name;
     private double quantity;
     private String unit;
-    private byte[] image;
+    private String image;
+    private byte[] imageByte;
     private int relationId;
 
     public DBIngredient() {
     }
 
-    public DBIngredient(int ingredientId, String name, double quantity, String unit, byte[] image, int relationId) {
-        this.ingredientId = ingredientId;
+    public DBIngredient( String name, double quantity, String unit, String image, int relationId) {
         this.name = name;
         this.quantity = quantity;
         this.unit = unit;
         this.image = image;
         this.relationId = relationId;
+    }
+
+    public DBIngredient(IIngredient e, int relationId) {
+        this(e.getName(),e.getAmount(),e.GetUnit(),e.getImage(), relationId);
     }
 
     public int getIngredientId() {
@@ -39,6 +44,16 @@ public class DBIngredient implements IIngredient<byte[]> {
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public double getAmount() {
+        return this.quantity;
+    }
+
+    @Override
+    public String GetUnit() {
+        return this.unit;
     }
 
     @Override
@@ -70,11 +85,11 @@ public class DBIngredient implements IIngredient<byte[]> {
     }
 
     @Override
-    public byte[] getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(byte[] image) {
+    public void setImage(String image) {
         this.image = image;
     }
 
@@ -94,5 +109,11 @@ public class DBIngredient implements IIngredient<byte[]> {
         this.relationId = relationId;
     }
 
+    public byte[] getImageByte() {
+        return imageByte;
+    }
 
+    public void setImageByte(byte[] imageByte) {
+        this.imageByte = imageByte;
+    }
 }

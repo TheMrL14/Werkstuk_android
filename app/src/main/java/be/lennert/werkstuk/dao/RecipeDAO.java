@@ -43,8 +43,8 @@ public abstract class RecipeDAO {
     private void insertIngredients(DBRecipe recipe, List<IIngredient> ingredients){
         ArrayList<DBIngredient> dbIngredientList = new ArrayList<>();
         for(IIngredient i : ingredients){
-            DBIngredient ing = (DBIngredient) i;
-            ing.setRecipeId(recipe.getId());
+            DBIngredient ing = new DBIngredient(i,recipe.getId()) ;
+            //ing.setRecipeId(recipe.getId());
             dbIngredientList.add(ing);
         }
 
@@ -54,8 +54,8 @@ public abstract class RecipeDAO {
     private void insertSteps(DBRecipe recipe, List<IStep> steps){
         ArrayList<DBStep> dbStepsList = new ArrayList<>();
         for(IStep i : steps){
-            DBStep step = (DBStep) i;
-            step.setRecipeId(recipe.getId());
+            DBStep step = new DBStep(i,recipe.getId());
+            //step.setRecipeId(recipe.getId());
             dbStepsList.add(step);
         }
 
