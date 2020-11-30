@@ -9,15 +9,15 @@ import androidx.lifecycle.LiveData;
 import java.util.List;
 
 import be.lennert.werkstuk.controllers.RecipeRepository;
-import be.lennert.werkstuk.model.apimodels.Recipe;
 import be.lennert.werkstuk.model.dbmodels.DBRecipe;
 import be.lennert.werkstuk.model.interfaces.TaskListener;
 
-public class RecipeViewModel extends AndroidViewModel {
+public class FavouritesViewModel extends AndroidViewModel {
+
     private RecipeRepository repo;
     private LiveData<List<DBRecipe>> allRecipes;
 
-    public RecipeViewModel(@NonNull Application app){
+    public FavouritesViewModel(@NonNull Application app) {
         super(app);
         repo = new RecipeRepository(app);
         allRecipes = repo.getAllRecipes();
@@ -26,12 +26,5 @@ public class RecipeViewModel extends AndroidViewModel {
     public LiveData<List<DBRecipe>> getAllRecipes() {
         return allRecipes;
     }
-
-    public void getRecipeById(int id,TaskListener l){repo.getRecipeByID(id,l);}
-
-    public void insert(DBRecipe r,TaskListener l){repo.insert(r,l);}
-
-    public void isRecipeSaved(int id,TaskListener l){repo.isRecipeSaved(id, l);}
-
-    public void delete(DBRecipe r,TaskListener l ){repo.deleteRecipe(r,l);}
+    public void isRecipeSaved(int id, TaskListener l){repo.isRecipeSaved(id, l);}
 }

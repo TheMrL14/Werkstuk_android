@@ -88,6 +88,8 @@ public class ExtendedIngredient implements IIngredient {
         this.meta = meta;
         this.metaInformation = metaInformation;
         this.measures = measures;
+        this.amount = measures.getMetric().getAmount();
+        this.unit = measures.getMetric().getUnitShort();
     }
 
     public int getId() {
@@ -156,13 +158,15 @@ public class ExtendedIngredient implements IIngredient {
     }
 
     public double getAmount() {
-        return measures.getMetric().getAmount();
+        return amount;
     }
 
     @Override
     public String GetUnit() {
-        return measures.getMetric().getUnitShort();
+        return this.unit;
     }
+
+
 
     public void setAmount(double amount) {
         this.amount = amount;

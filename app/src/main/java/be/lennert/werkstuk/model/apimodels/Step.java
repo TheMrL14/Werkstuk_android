@@ -11,6 +11,8 @@ import be.lennert.werkstuk.model.interfaces.IStep;
 
 public class Step implements IStep {
 
+    private int id;
+
     @SerializedName("number")
     @Expose
     private int number;
@@ -50,6 +52,12 @@ public class Step implements IStep {
         this.equipment = equipment;
         this.length = length;
     }
+
+    @Override
+    public int getId() {
+        return this.id;
+    }
+
     @Override
     public int getNumber() {
         return number;

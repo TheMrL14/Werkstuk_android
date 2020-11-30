@@ -19,7 +19,7 @@ import be.lennert.werkstuk.views.MainFragmentSearch;
 public class MainActivity extends AppCompatActivity {
 
 
-
+    public static final String CONNECTION = "be.lennert.werkstuk.IS_OFFLINE";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

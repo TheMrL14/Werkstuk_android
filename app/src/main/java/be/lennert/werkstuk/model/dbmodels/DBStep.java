@@ -4,6 +4,7 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import be.lennert.werkstuk.model.apimodels.Step;
@@ -15,7 +16,7 @@ import be.lennert.werkstuk.model.interfaces.IStep;
 public class DBStep implements IStep {
 
     @PrimaryKey(autoGenerate = true)
-    private int stepId;
+    private int stepId = 0;
     private int number;
     private String step;
     private int recipeId;
@@ -33,6 +34,7 @@ public class DBStep implements IStep {
 
     public DBStep(IStep s,int recipeId){
         this(s.getNumber(),s.getStep(),recipeId);
+        this.setIngredients(s.getIngredients());
     }
 
     public int getStepId() {
@@ -42,6 +44,12 @@ public class DBStep implements IStep {
     public void setStepId(int id) {
         this.stepId = id;
     }
+
+    @Override
+    public int getId() {
+        return this.getStepId();
+    }
+
     @Override
     public int getNumber() {
         return number;
@@ -61,7 +69,23 @@ public class DBStep implements IStep {
     }
 
     public void setIngredients(List<IIngredient> ingredients) {
-        this.ingredients = ingredients;
+        List<IIngredient> castedIngredients = new ArrayList<>();
+        if(ingredients != null){
+            for(IIngredient i : ingredients){
+                castedIngredients.add(new DBIngredient(i.getName(),this.stepId));
+            }
+        }
+        this.ingredients = castedIngredients;
+    }
+
+    public void setIngredientsFromDB(List<DBIngredient> ingredients) {
+        List<IIngredient> castedIngredients = new ArrayList<>();
+        if(ingredients != null){
+            for(IIngredient i : ingredients){
+                castedIngredients.add(new DBIngredient(i.getName(),this.stepId));
+            }
+        }
+        this.ingredients = castedIngredients;
     }
 
     public void setStep(String step) {

@@ -1,5 +1,5 @@
 package be.lennert.werkstuk.model.interfaces;
 
-public interface TaskListener {
-    void onTaskCompleted(boolean b);
+public interface TaskListener<T> {
+    void onTaskCompleted(T t);
 }

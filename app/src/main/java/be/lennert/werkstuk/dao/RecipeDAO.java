@@ -15,6 +15,9 @@ import be.lennert.werkstuk.model.apimodels.Ingredient;
 import be.lennert.werkstuk.model.dbmodels.DBIngredient;
 import be.lennert.werkstuk.model.dbmodels.DBRecipe;
 import be.lennert.werkstuk.model.dbmodels.DBStep;
+import be.lennert.werkstuk.model.dbmodels.dbrelationmodels.DBRecipeWithIngredients;
+import be.lennert.werkstuk.model.dbmodels.dbrelationmodels.DBRecipeWithSteps;
+import be.lennert.werkstuk.model.dbmodels.dbrelationmodels.DBStepWithIngredients;
 import be.lennert.werkstuk.model.interfaces.IIngredient;
 import be.lennert.werkstuk.model.interfaces.IStep;
 
@@ -25,6 +28,18 @@ public abstract class RecipeDAO {
     @Query("SELECT * FROM recipes")
     public abstract LiveData<List<DBRecipe>> loadAllRecipes();
 
+    @Transaction
+    @Query("SELECT * FROM steps WHERE recipeId = :id")
+    public abstract List<DBStep> getStepsWithId(int id);
+
+    @Transaction
+    @Query("SELECT * FROM ingredients WHERE relationId = :id")
+    public abstract List<DBIngredient> getIngredientsWithId(int id);
+
+    @Transaction
+    @Query("SELECT * FROM recipes WHERE rId = :id")
+    public abstract DBRecipeWithIngredients getRecipeById(int id);
+
     @Query("SELECT rId FROM recipes WHERE rId = :id")
     public abstract int recipeIsSaved(int id);
 
@@ -34,17 +49,25 @@ public abstract class RecipeDAO {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     public void insertFull(DBRecipe recipe){
         if(recipe.getSteps() != null && recipe.getIngredients() != null){
-            insertIngredients(recipe, recipe.getIngredients());
+            insertIngredients(recipe.getId(), recipe.getIngredients());
             insertSteps(recipe, recipe.getSteps());
             insertRecipe(recipe);
         }
     };
 
-    private void insertIngredients(DBRecipe recipe, List<IIngredient> ingredients){
+    private void insertIngredients(int id, List<IIngredient> ingredients){
         ArrayList<DBIngredient> dbIngredientList = new ArrayList<>();
         for(IIngredient i : ingredients){
-            DBIngredient ing = new DBIngredient(i,recipe.getId()) ;
-            //ing.setRecipeId(recipe.getId());
+            DBIngredient ing = new DBIngredient(i,id) ;
+            dbIngredientList.add(ing);
+        }
+
+        insertAllIngredients(dbIngredientList);
+    }
+    private void insertMinimalIngredients(int id, List<IIngredient> ingredients){
+        ArrayList<DBIngredient> dbIngredientList = new ArrayList<>();
+        for(IIngredient i : ingredients){
+            DBIngredient ing = new DBIngredient(i.getName(),id) ;
             dbIngredientList.add(ing);
         }
 
@@ -55,19 +78,25 @@ public abstract class RecipeDAO {
         ArrayList<DBStep> dbStepsList = new ArrayList<>();
         for(IStep i : steps){
             DBStep step = new DBStep(i,recipe.getId());
-            //step.setRecipeId(recipe.getId());
+            int id = (int) insertStep(step);
+            if(step.getIngredients() != null) insertMinimalIngredients(id,step.getIngredients());
             dbStepsList.add(step);
         }
 
         insertAllSteps(dbStepsList);
     }
 
-    @Insert
+
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     public abstract void insertAllIngredients(List<DBIngredient> ingredients);
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     public abstract void insertRecipe(DBRecipe recipe);
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     public abstract void insertAllSteps(List<DBStep> steps);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    public abstract long insertStep(DBStep step);
 
     @Delete
     public abstract void delete(DBRecipe recipes);

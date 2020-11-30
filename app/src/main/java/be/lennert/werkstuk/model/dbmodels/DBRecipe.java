@@ -1,10 +1,15 @@
 package be.lennert.werkstuk.model.dbmodels;
 
 
+import android.graphics.Bitmap;
+
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import be.lennert.werkstuk.model.apimodels.Ingredient;
@@ -17,13 +22,20 @@ import be.lennert.werkstuk.model.interfaces.IStep;
 @Entity(tableName = "recipes")
 public class DBRecipe implements IDetailedRecipe {
     @PrimaryKey
+    @NonNull
+    @ColumnInfo(name = "rId")
     private int rId;
+    @ColumnInfo(name = "portions")
     private int portions;
+    @NonNull
+    @ColumnInfo(name = "title")
     private String title;
-    @Ignore
-    private byte[] imageByte;
-
+    @ColumnInfo(name = "image")
     private String image;
+
+
+    @Ignore
+    private Bitmap imageBitmap;
 
     @Ignore
     private List<IIngredient> ingredients;
@@ -77,7 +89,7 @@ public class DBRecipe implements IDetailedRecipe {
 
     @Override
     public String getTitle() {
-        return null;
+        return this.title;
     }
 
     public void setTitle(String title) {
@@ -99,9 +111,14 @@ public class DBRecipe implements IDetailedRecipe {
         return ingredients;
     }
 
-    public void setIngredients(List<IIngredient> ingredients) {
+    public void setIngredients(List<DBIngredient> dbIngredients) {
+        List<IIngredient> ingredients = new ArrayList<>();
+        for(DBIngredient ingredient : dbIngredients){
+            ingredients.add((IIngredient) ingredient);
+        }
         this.ingredients = ingredients;
     }
+
 
 
 
@@ -113,11 +130,18 @@ public class DBRecipe implements IDetailedRecipe {
         this.steps = steps;
     }
 
-    public byte[] getImageByte() {
-        return imageByte;
+    public void setDbsteps(List<DBStep> dbsteps) {
+        List<IStep> steps = new ArrayList<>();
+        for(DBStep ingredient : dbsteps){
+            steps.add((IStep) ingredient);
+        }
+        this.steps = steps;
+    }
+    public Bitmap getImageBitmap() {
+        return imageBitmap;
     }
 
-    public void setImageByte(byte[] imageByte) {
-        this.imageByte = imageByte;
+    public void setImageBitmap(Bitmap imageBitmap) {
+        this.imageBitmap = imageBitmap;
     }
 }

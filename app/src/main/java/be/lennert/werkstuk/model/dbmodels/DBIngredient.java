@@ -32,6 +32,10 @@ public class DBIngredient implements IIngredient {
     public DBIngredient(IIngredient e, int relationId) {
         this(e.getName(),e.getAmount(),e.GetUnit(),e.getImage(), relationId);
     }
+    public DBIngredient(String name,int relationId){
+        this.name = name;
+        this.relationId = relationId;
+    }
 
     public int getIngredientId() {
         return ingredientId;

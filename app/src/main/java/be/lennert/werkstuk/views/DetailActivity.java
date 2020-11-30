@@ -34,6 +34,7 @@ import be.lennert.werkstuk.model.interfaces.APIListener;
 import be.lennert.werkstuk.model.interfaces.IDetailedRecipe;
 
 import be.lennert.werkstuk.model.apimodels.Recipe;
+import be.lennert.werkstuk.model.interfaces.IRecipe;
 import be.lennert.werkstuk.model.interfaces.TaskListener;
 import be.lennert.werkstuk.utils.ImageUtils;
 import be.lennert.werkstuk.viewmodel.RecipeViewModel;
@@ -43,7 +44,7 @@ import static be.lennert.werkstuk.controllers.FoodAPIClient.FOODAPI;
 
 public class DetailActivity extends AppCompatActivity {
 
-    public static final String CONNECTION = "be.lennert.werkstuk.IS_OFFLINE";
+
     public RecipeViewModel recipeViewModel;
 
     IDetailedRecipe recipe;
@@ -65,7 +66,7 @@ public class DetailActivity extends AppCompatActivity {
 
         //Get DATA from previous page
         Intent intent = getIntent();
-        isOnline = intent.getBooleanExtra(CONNECTION,false);
+        isOnline = intent.getBooleanExtra(MainActivity.CONNECTION,false);
         recipeId = intent.getIntExtra(MainFragmentSearch.RECIPE_ID,0);
 
         //Set displayed recipe
@@ -97,22 +98,38 @@ public class DetailActivity extends AppCompatActivity {
                 }
             });
         }else{
+            recipeViewModel.getRecipeById(id, new TaskListener<DBRecipe>() {
+                @Override
+                public void onTaskCompleted(DBRecipe recipeOfDb) {
 
+                    File file = getFileStreamPath(recipeOfDb.getImage());
+                    if(file.exists()){
+                        recipeOfDb.setImage(file.getAbsolutePath());
+                    }
+                    recipe = (IDetailedRecipe) recipeOfDb;
+                    loadView();
+                }
+            });
         }
         ;
     }
 
     private void loadView() {//Put Data in View
         TextView txtTitle = (TextView) findViewById(R.id.txtRecipeTitle);
-        ImageView imgRecipe = (ImageView) findViewById(R.id.imgRecipe);
-        Picasso.get().load((String) recipe.getImage()).into(imgRecipe);
         txtTitle.setText(recipe.getTitle());
         //set main fragment to isViewIngredients (default true = default Display the ingredients)
+        ImageView imgRecipe = (ImageView) findViewById(R.id.imgRecipe);
+        if(isOnline) Picasso.get().load((String) recipe.getImage()).into(imgRecipe);
+        else{
+            Bitmap bmp = BitmapFactory.decodeFile(recipe.getImage());
+            imgRecipe.setImageBitmap(bmp);
+        }
+
         setMainFragment(isViewIngredients? multiStateToggleChoices.INGREDIENTS : multiStateToggleChoices.RECIPE);
         //Check if recipe is saved in Local Database
-        recipeViewModel.isRecipeSaved(recipe.getId(),new TaskListener(){
+        recipeViewModel.isRecipeSaved(recipe.getId(),new TaskListener<Boolean>(){
             @Override
-            public void onTaskCompleted(boolean b) {
+            public void onTaskCompleted(Boolean b) {
                 isFavourited = b;
                 //fill or unfill heart
                 setHeartButton();
@@ -155,37 +172,39 @@ public class DetailActivity extends AppCompatActivity {
     public void addRemoveFavourite(View view) {
         isFavourited = !isFavourited;
         if(isFavourited){uploadRecipe();}
-        else{
-            //Delete from database
-            recipeViewModel.delete(new DBRecipe(recipe, ""), new TaskListener() {
-                @Override
-                public void onTaskCompleted(boolean b) {
-                    setHeartButton();
-                }
-            });
-            //Delete image
-            final String imagePath = recipe.getTitle().replaceAll("\\s+","")  +".jpeg";
-            File file = getApplicationContext().getFileStreamPath(imagePath);
-            file.delete();
-        }
+        else{deleteRecipe();}
 
     }
 
     private void uploadRecipe(){
         final String imagePath = recipe.getTitle().replaceAll("\\s+","")  +".jpeg";
         //TODO optimise Async flow ( download image seperate from uploading recipe)
-        new  DownloadImage(imagePath, new TaskListener() {
+        new  DownloadImage(imagePath, new TaskListener<Boolean>() {
             @Override
-            public void onTaskCompleted(boolean b) {
+            public void onTaskCompleted(Boolean b) {
                 File file = getApplicationContext().getFileStreamPath(imagePath);
                 String imageFullPath = file.getAbsolutePath();
             }
         }).execute((String) recipe.getImage());
 
-        recipeViewModel.insert(new DBRecipe(recipe, imagePath), new TaskListener() {
+        recipeViewModel.insert(new DBRecipe(recipe, imagePath), new TaskListener<Boolean>() {
             @Override
-            public void onTaskCompleted(boolean b) {setHeartButton();}
+            public void onTaskCompleted(Boolean b) {setHeartButton();}
         });
+    }
+
+    private void deleteRecipe(){
+        //Delete from database
+        recipeViewModel.delete(new DBRecipe(recipe, ""), new TaskListener<Boolean>() {
+            @Override
+            public void onTaskCompleted(Boolean b) {
+                setHeartButton();
+            }
+        });
+        //Delete image
+        final String imagePath = recipe.getTitle().replaceAll("\\s+","")  +".jpeg";
+        File file = getApplicationContext().getFileStreamPath(imagePath);
+        file.delete();
     }
     //fill / unfill heart
     private void setHeartButton(){

@@ -1,11 +1,14 @@
 package be.lennert.werkstuk.views;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,8 +17,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
+import be.lennert.werkstuk.MainActivity;
 import be.lennert.werkstuk.R;
 import be.lennert.werkstuk.adapters.ListViewAdapter;
 
@@ -23,11 +29,14 @@ import be.lennert.werkstuk.adapters.ListViewAdapter;
 import be.lennert.werkstuk.model.dbmodels.DBRecipe;
 import be.lennert.werkstuk.model.interfaces.IRecipe;
 import be.lennert.werkstuk.utils.StringUtils;
+import be.lennert.werkstuk.viewmodel.FavouritesViewModel;
+import be.lennert.werkstuk.viewmodel.RecipeViewModel;
 
 
 public class MainFragmentFavourite extends Fragment implements ListViewAdapter.ListItemClickListener {
 
-    public static final String RECIPE_ID = "be.lennert.werkstuk.DB_RECIPE_ID";
+
+    public FavouritesViewModel vm;
 
     private ArrayList<DBRecipe> recipes = new ArrayList<DBRecipe>();
      ArrayList<IRecipe> mData;
@@ -39,7 +48,22 @@ public class MainFragmentFavourite extends Fragment implements ListViewAdapter.L
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        vm = ViewModelProviders.of(this).get(FavouritesViewModel.class);
         loadView();
+        vm.getAllRecipes().observe(getViewLifecycleOwner(), new Observer<List<DBRecipe>>() {
+            @Override
+            public void onChanged(List<DBRecipe> dbRecipes) {
+                recipes = new ArrayList<>();
+               for(DBRecipe r : dbRecipes){
+                   File file = getContext().getFileStreamPath(r.getImage());
+                   if(file.exists()){
+                       r.setImage(file.getAbsolutePath());
+                   }
+                   recipes.add(r);
+               }
+                loadView();
+            }
+        });
     }
 
     public void loadView(){
@@ -61,7 +85,7 @@ public class MainFragmentFavourite extends Fragment implements ListViewAdapter.L
             for (DBRecipe r:recipes)  mData.add((IRecipe) r);
             recyclerView.setVisibility(View.VISIBLE);
             emptyView.setVisibility(View.GONE);
-            ListViewAdapter adapter = new ListViewAdapter(mData,this);
+            ListViewAdapter adapter = new ListViewAdapter(mData,this,false);
             recyclerView.setAdapter(adapter);
         }
 
@@ -70,7 +94,8 @@ public class MainFragmentFavourite extends Fragment implements ListViewAdapter.L
     @Override
     public void onItemClick(int id) {
         Intent intent = new Intent(MainFragmentFavourite.this.getActivity(), DetailActivity.class);
-        intent.putExtra(RECIPE_ID,id);
+        intent.putExtra(MainFragmentSearch.RECIPE_ID,id);
+        intent.putExtra(MainActivity.CONNECTION,false);
         startActivity(intent);
     }
 }

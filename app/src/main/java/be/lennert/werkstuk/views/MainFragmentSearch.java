@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
+import be.lennert.werkstuk.MainActivity;
 import be.lennert.werkstuk.R;
 import be.lennert.werkstuk.adapters.ListViewAdapter;
 import be.lennert.werkstuk.model.interfaces.APIListener;
@@ -96,7 +97,7 @@ public class MainFragmentSearch extends Fragment implements ListViewAdapter.List
         }else{
         recyclerView.setVisibility(View.VISIBLE);
         emptyView.setVisibility(View.GONE);
-        ListViewAdapter adapter = new ListViewAdapter(recipes,this);
+        ListViewAdapter adapter = new ListViewAdapter(recipes,this,true);
         recyclerView.setAdapter(adapter);
     }
 
@@ -124,7 +125,7 @@ public class MainFragmentSearch extends Fragment implements ListViewAdapter.List
     public void onItemClick(int id) {
         Intent intent = new Intent(MainFragmentSearch.this.getActivity(), DetailActivity.class);
         intent.putExtra(RECIPE_ID,id);
-        intent.putExtra(DetailActivity.CONNECTION,true);
+        intent.putExtra(MainActivity.CONNECTION,true);
         startActivity(intent);
     }
 }
