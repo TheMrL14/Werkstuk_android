@@ -30,8 +30,6 @@ public class ImageUtils  {
         }
     }
 
-
-
     public static Bitmap loadImageBitmap(Context context, String imageName) {
         Bitmap bitmap = null;
         FileInputStream fiStream;
@@ -43,5 +41,10 @@ public class ImageUtils  {
             e.printStackTrace();
         }
         return bitmap;
+    }
+
+    public static File getLocalFile(Context context,String path){
+        String localPath =StringUtils.generateInternalImagePath(path);
+        return context.getFileStreamPath(localPath);
     }
 }

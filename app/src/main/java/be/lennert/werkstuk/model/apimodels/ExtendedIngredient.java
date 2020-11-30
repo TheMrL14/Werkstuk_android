@@ -162,7 +162,7 @@ public class ExtendedIngredient implements IIngredient {
     }
 
     @Override
-    public String GetUnit() {
+    public String getUnit() {
         return this.unit;
     }
 
@@ -172,9 +172,6 @@ public class ExtendedIngredient implements IIngredient {
         this.amount = amount;
     }
 
-    public String getUnit() {
-        return unit;
-    }
 
     public void setUnit(String unit) {
         this.unit = unit;

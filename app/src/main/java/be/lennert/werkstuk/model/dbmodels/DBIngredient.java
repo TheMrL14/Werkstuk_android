@@ -32,7 +32,7 @@ public class DBIngredient implements IIngredient {
     }
     @Ignore
     public DBIngredient(IIngredient e, int relationId) {
-        this(e.getName(),e.getAmount(),e.GetUnit(),e.getImage(), relationId);
+        this(e.getName(),e.getAmount(),e.getUnit(),e.getImage(), relationId);
     }
     @Ignore
     public DBIngredient(String name,int relationId){
@@ -59,7 +59,7 @@ public class DBIngredient implements IIngredient {
     }
 
     @Override
-    public String GetUnit() {
+    public String getUnit() {
         return this.unit;
     }
 
@@ -83,9 +83,6 @@ public class DBIngredient implements IIngredient {
         this.quantity = quantity;
     }
 
-    public String getUnit() {
-        return unit;
-    }
 
     public void setUnit(String unit) {
         this.unit = unit;

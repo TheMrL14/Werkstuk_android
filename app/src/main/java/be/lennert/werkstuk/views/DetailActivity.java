@@ -36,7 +36,9 @@ import be.lennert.werkstuk.model.interfaces.IDetailedRecipe;
 import be.lennert.werkstuk.model.apimodels.Recipe;
 import be.lennert.werkstuk.model.interfaces.IRecipe;
 import be.lennert.werkstuk.model.interfaces.TaskListener;
+import be.lennert.werkstuk.utils.DownloadImage;
 import be.lennert.werkstuk.utils.ImageUtils;
+import be.lennert.werkstuk.utils.StringUtils;
 import be.lennert.werkstuk.viewmodel.RecipeViewModel;
 import retrofit2.Response;
 
@@ -45,7 +47,7 @@ import static be.lennert.werkstuk.controllers.FoodAPIClient.FOODAPI;
 public class DetailActivity extends AppCompatActivity {
 
 
-    public RecipeViewModel recipeViewModel;
+    private RecipeViewModel recipeViewModel;
 
     IDetailedRecipe recipe;
     MultiStateToggleButton switchBtn;
@@ -101,7 +103,6 @@ public class DetailActivity extends AppCompatActivity {
             recipeViewModel.getRecipeById(id, new TaskListener<DBRecipe>() {
                 @Override
                 public void onTaskCompleted(DBRecipe recipeOfDb) {
-
                     File file = getFileStreamPath(recipeOfDb.getImage());
                     if(file.exists()){
                         recipeOfDb.setImage(file.getAbsolutePath());
@@ -177,13 +178,11 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void uploadRecipe(){
-        final String imagePath = recipe.getTitle().replaceAll("\\s+","")  +".jpeg";
+        final String imagePath = StringUtils.generateInternalImagePath(recipe.getTitle());
         //TODO optimise Async flow ( download image seperate from uploading recipe)
-        new  DownloadImage(imagePath, new TaskListener<Boolean>() {
+        new DownloadImage(getApplicationContext(),imagePath, new TaskListener<Boolean>() {
             @Override
             public void onTaskCompleted(Boolean b) {
-                File file = getApplicationContext().getFileStreamPath(imagePath);
-                String imageFullPath = file.getAbsolutePath();
             }
         }).execute((String) recipe.getImage());
 
@@ -202,8 +201,7 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
         //Delete image
-        final String imagePath = recipe.getTitle().replaceAll("\\s+","")  +".jpeg";
-        File file = getApplicationContext().getFileStreamPath(imagePath);
+        File file = ImageUtils.getLocalFile(getApplicationContext(),recipe.getTitle());
         file.delete();
     }
     //fill / unfill heart
@@ -244,37 +242,5 @@ public class DetailActivity extends AppCompatActivity {
 
     //used for downloading an image and save locally
     //in combination with static funcs from ImageUtils
-    private class DownloadImage extends AsyncTask<String,Void, Bitmap>{
 
-        private String fileName;
-        private TaskListener listener;
-        public DownloadImage(String fileName, TaskListener listener){
-            this.fileName = fileName;
-            this.listener = listener;
-        }
-
-
-        private Bitmap downloadImageBitmap(String sUrl) {
-            Bitmap bitmap = null;
-            try {
-                InputStream inputStream = new URL(sUrl).openStream();   // Download Image from URL
-                bitmap = BitmapFactory.decodeStream(inputStream);       // Decode Bitmap
-                inputStream.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return bitmap;
-        }
-
-        @Override
-        protected Bitmap doInBackground(String... strings) {
-            return downloadImageBitmap(strings[0]);
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap result) {
-            if(fileName != null) ImageUtils.saveImage(getApplicationContext(),result, fileName,listener);
-
-        }
-    }
 }

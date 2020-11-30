@@ -19,4 +19,12 @@ public  class StringUtils {
         int roundedNumber = (int) Math.round(nr/10.0) * 10;
         return Integer.toString(roundedNumber);
     }
+
+    public static String generateStringId(String param){
+        return param.replaceAll("\\s+", "");
+    }
+
+    public static String generateInternalImagePath(String param){
+        return generateStringId(param) +".jpeg";
+    }
 }
