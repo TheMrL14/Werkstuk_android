@@ -37,8 +37,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="10dp"
                 android:gravity="center"
+                android:maxWidth="250dp"
                 android:padding="10dp"
-                android:text="Pasta Ding" />
+                android:text="Place Holder"
+                app:autoSizeTextType="uniform" />
 
             <ImageButton
                 android:id="@+id/btnFavourite"

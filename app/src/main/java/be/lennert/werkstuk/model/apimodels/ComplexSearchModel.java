@@ -11,6 +11,7 @@ public class ComplexSearchModel implements IRecipe {
     @SerializedName("image")
     private String image;
 
+    private int portions = 1;
 
     public ComplexSearchModel() {
     }
@@ -39,6 +40,16 @@ public class ComplexSearchModel implements IRecipe {
     @Override
     public String getImage() {
         return image;
+    }
+
+    @Override
+    public void setPortions(int portions) {
+        this.portions = portions;
+    }
+
+    @Override
+    public int getPortions() {
+        return this.portions;
     }
 
     public void setImage(String image) {

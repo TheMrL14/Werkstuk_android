@@ -54,11 +54,11 @@ public class DBRecipe implements IDetailedRecipe {
         this.ingredients = ingredients;
         this.steps = steps;
     }
-
+    @Ignore
     public DBRecipe(Recipe r,String imagePath){
         this(r.getId(),1,r.getTitle(),imagePath,r.getIngredients(), r.getSteps());
     }
-
+    @Ignore
     public DBRecipe(IDetailedRecipe r, String imagePath){
         this(r.getId(),1,r.getTitle(),imagePath,r.getIngredients(), r.getSteps());
     }

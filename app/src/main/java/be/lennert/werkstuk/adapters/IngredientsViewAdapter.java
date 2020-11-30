@@ -21,6 +21,7 @@ public class IngredientsViewAdapter  extends RecyclerView.Adapter<IngredientsVie
     public static final String imagePath = "https://spoonacular.com/cdn/ingredients_100x100/";
 
     private List<IIngredient> ingredientList;
+    private int portions;
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         private final TextView textViewTitle,textViewQuantity;
@@ -46,9 +47,12 @@ public class IngredientsViewAdapter  extends RecyclerView.Adapter<IngredientsVie
 
     }
 
-    public IngredientsViewAdapter(List<IIngredient> mData) {
+    public IngredientsViewAdapter(List<IIngredient> mData, int portions) {
         this.ingredientList = mData;
+        this.portions = portions;
     }
+
+
 
     @NonNull
     @Override
@@ -62,7 +66,7 @@ public class IngredientsViewAdapter  extends RecyclerView.Adapter<IngredientsVie
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
             String title = ingredientList.get(position).getName();
-            String quantity = ingredientList.get(position).getMetricAmount(1);
+            String quantity = ingredientList.get(position).getMetricAmount(this.portions);
             String image =imagePath + ingredientList.get(position).getImage();
 
             viewHolder.getTextViewTitle().setText(title);
@@ -75,4 +79,7 @@ public class IngredientsViewAdapter  extends RecyclerView.Adapter<IngredientsVie
         return ingredientList.size();
     }
 
+    public void setPortions(int portions){
+        this.portions = portions;
+    }
 }

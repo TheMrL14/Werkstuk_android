@@ -112,7 +112,7 @@ public class MainFragmentSearch extends Fragment implements ListViewAdapter.List
             @Override
             public void call(Response<Joke> response) {
                 StringBuilder sb = new StringBuilder();
-                sb.append(getString(R.string.StartSearching));
+                sb.append( getString(R.string.StartSearching));
                 sb.append("\n \n");
                 sb.append(response.body().getText());
                 String text = sb.toString();

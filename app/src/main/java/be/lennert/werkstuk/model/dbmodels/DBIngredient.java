@@ -1,6 +1,7 @@
 package be.lennert.werkstuk.model.dbmodels;
 
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import be.lennert.werkstuk.model.apimodels.ExtendedIngredient;
@@ -21,6 +22,7 @@ public class DBIngredient implements IIngredient {
     public DBIngredient() {
     }
 
+
     public DBIngredient( String name, double quantity, String unit, String image, int relationId) {
         this.name = name;
         this.quantity = quantity;
@@ -28,10 +30,11 @@ public class DBIngredient implements IIngredient {
         this.image = image;
         this.relationId = relationId;
     }
-
+    @Ignore
     public DBIngredient(IIngredient e, int relationId) {
         this(e.getName(),e.getAmount(),e.GetUnit(),e.getImage(), relationId);
     }
+    @Ignore
     public DBIngredient(String name,int relationId){
         this.name = name;
         this.relationId = relationId;

@@ -20,7 +20,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 //https://stackoverflow.com/questions/41160019/how-can-i-update-activity-fragment-ui-from-retrofit-onresponse
 
 public class FoodAPIClient {
-    private final String API_KEY = "4326a1e7b13745e6b7719f97fc3a5ae8";
+    //private final String API_KEY = "4326a1e7b13745e6b7719f97fc3a5ae8"; //hotmail account
+    private final String API_KEY = "624b181a64564261983ad51b102a56df"; //gmail account
     private final static String BASE_API_URL = "https://api.spoonacular.com/";
     private final int totalSearches = 50;
 

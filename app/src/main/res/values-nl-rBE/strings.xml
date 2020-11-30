@@ -10,4 +10,6 @@
     <string name="NoSaved">Geen recepten opgeslagen</string>
     <string name="NoFound">Geen recepten gevonden, Hier Is Een Grapje</string>
     <string name="StartSearching">Start Zoeken, Maar geniet eerst van een grapje:</string>
+    <string name="sersving">persoon</string>
+    <string name="servings">personen</string>
 </resources>

@@ -213,6 +213,7 @@ public class DetailActivity extends AppCompatActivity {
         else heartBtn.setImageResource(R.drawable.favourite);
     }
 
+
     //Enum for Multe state button ( uses int value )
     enum multiStateToggleChoices{
         //https://codingexplained.com/coding/java/enum-to-integer-and-integer-to-enum

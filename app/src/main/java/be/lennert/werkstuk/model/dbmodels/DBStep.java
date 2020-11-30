@@ -31,7 +31,7 @@ public class DBStep implements IStep {
         this.step = step;
         this.recipeId = recipeId;
     }
-
+    @Ignore
     public DBStep(IStep s,int recipeId){
         this(s.getNumber(),s.getStep(),recipeId);
         this.setIngredients(s.getIngredients());

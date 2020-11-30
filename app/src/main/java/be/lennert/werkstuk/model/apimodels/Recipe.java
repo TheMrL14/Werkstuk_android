@@ -503,6 +503,16 @@ public class Recipe implements IDetailedRecipe  {
         this.spoonacularSourceUrl = spoonacularSourceUrl;
     }
 
+    @Override
+    public void setPortions(int portions) {
+        this.servings = portions;
+    }
+
+    @Override
+    public int getPortions() {
+        return this.servings;
+    }
+
 
     @Override
     public List<IIngredient> getIngredients() {
