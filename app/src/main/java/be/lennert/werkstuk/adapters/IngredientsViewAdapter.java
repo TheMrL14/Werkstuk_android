@@ -1,5 +1,7 @@
 package be.lennert.werkstuk.adapters;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,13 +17,15 @@ import java.util.List;
 
 import be.lennert.werkstuk.R;
 import be.lennert.werkstuk.model.interfaces.IIngredient;
+import be.lennert.werkstuk.utils.ImageUtils;
 
 public class IngredientsViewAdapter  extends RecyclerView.Adapter<IngredientsViewAdapter.ViewHolder> {
 
-    public static final String imagePath = "https://spoonacular.com/cdn/ingredients_100x100/";
+
 
     private List<IIngredient> ingredientList;
     private int portions;
+    private boolean isOnline;
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         private final TextView textViewTitle,textViewQuantity;
@@ -47,9 +51,10 @@ public class IngredientsViewAdapter  extends RecyclerView.Adapter<IngredientsVie
 
     }
 
-    public IngredientsViewAdapter(List<IIngredient> mData, int portions) {
+    public IngredientsViewAdapter(List<IIngredient> mData, int portions, boolean isOnline) {
         this.ingredientList = mData;
         this.portions = portions;
+        this.isOnline = isOnline;
     }
 
 
@@ -65,13 +70,18 @@ public class IngredientsViewAdapter  extends RecyclerView.Adapter<IngredientsVie
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
+        //
             String title = ingredientList.get(position).getName();
             String quantity = ingredientList.get(position).getMetricAmount(this.portions);
-            String image =imagePath + ingredientList.get(position).getImage();
+            String image = ImageUtils.imagePathIngredients + ingredientList.get(position).getImage();
 
             viewHolder.getTextViewTitle().setText(title);
             viewHolder.getTextViewQuantity().setText(quantity);
-            Picasso.get().load(image).into(viewHolder.getImageView());
+           if(isOnline) Picasso.get().load(image).into(viewHolder.getImageView());
+           else{
+               Bitmap bmp = BitmapFactory.decodeFile(image);
+               viewHolder.getImageView().setImageBitmap(bmp);
+           }
     }
 
     @Override

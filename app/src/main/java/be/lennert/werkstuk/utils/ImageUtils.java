@@ -14,6 +14,8 @@ import be.lennert.werkstuk.model.interfaces.TaskListener;
 
 public class ImageUtils  {
 
+    public static final String imagePathIngredients = "https://spoonacular.com/cdn/ingredients_100x100/";
+
     public static void saveImage(Context context, Bitmap b, String fileName, TaskListener listener){
         FileOutputStream foStream;
         try

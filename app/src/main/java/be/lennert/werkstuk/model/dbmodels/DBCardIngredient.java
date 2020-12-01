@@ -20,6 +20,7 @@ public class DBCardIngredient implements IIngredient {
     private double amount;
     private String unit;
     private String image;
+    private boolean isDone;
 
 
     public DBCardIngredient(){};
@@ -30,6 +31,7 @@ public class DBCardIngredient implements IIngredient {
         this.amount = amount;
         this.unit = unit;
         this.image = image;
+        this.isDone = false;
     }
 
     @Ignore
@@ -58,7 +60,10 @@ public class DBCardIngredient implements IIngredient {
 
     @Override
     public String getMetricAmount(int servings) {
-        return null;
+        StringBuilder sb = new StringBuilder();
+        sb.append(StringUtils.roundToNearestTen(this.amount*servings));
+        sb.append(unit);
+        return sb.toString();
     }
 
     @Override
@@ -88,5 +93,17 @@ public class DBCardIngredient implements IIngredient {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public boolean isDone() {
+        return isDone;
+    }
+
+    public void setDone(boolean done) {
+        isDone = done;
+    }
+
+    public void done(){
+        isDone = true;
     }
 }

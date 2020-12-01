@@ -145,7 +145,7 @@ public class DetailActivity extends AppCompatActivity {
         switch (toggle){
             case INGREDIENTS:
                 isViewIngredients = true;
-                selectedFragment = new FragmentIngredientDetail(recipe.getIngredients());
+                selectedFragment = new FragmentIngredientDetail(recipe.getIngredients(),isOnline);
                 break;
             case RECIPE:
                 isViewIngredients = false;
@@ -179,7 +179,6 @@ public class DetailActivity extends AppCompatActivity {
 
     private void uploadRecipe(){
         final String imagePath = StringUtils.generateInternalImagePath(recipe.getTitle());
-        //TODO optimise Async flow ( download image seperate from uploading recipe)
         new DownloadImage(getApplicationContext(),imagePath, new TaskListener<Boolean>() {
             @Override
             public void onTaskCompleted(Boolean b) {

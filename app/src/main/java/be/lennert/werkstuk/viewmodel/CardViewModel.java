@@ -32,4 +32,6 @@ public class CardViewModel extends AndroidViewModel {
         return allIngredients;
     }
     public void insertIngredients(List<DBCardIngredient> i, TaskListener l){repo.insert(i, l); }
+    public void setIsDone(DBCardIngredient i){repo.setDone(i); }
+    public void nuke(){repo.nukeTable(); }
 }

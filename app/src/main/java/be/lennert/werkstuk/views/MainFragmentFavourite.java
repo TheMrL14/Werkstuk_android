@@ -28,6 +28,7 @@ import be.lennert.werkstuk.adapters.ListViewAdapter;
 
 import be.lennert.werkstuk.model.dbmodels.DBRecipe;
 import be.lennert.werkstuk.model.interfaces.IRecipe;
+import be.lennert.werkstuk.utils.ImageUtils;
 import be.lennert.werkstuk.utils.StringUtils;
 import be.lennert.werkstuk.viewmodel.FavouritesViewModel;
 import be.lennert.werkstuk.viewmodel.RecipeViewModel;
@@ -55,7 +56,7 @@ public class MainFragmentFavourite extends Fragment implements ListViewAdapter.L
             public void onChanged(List<DBRecipe> dbRecipes) {
                 recipes = new ArrayList<>();
                for(DBRecipe r : dbRecipes){
-                   File file = getContext().getFileStreamPath(r.getImage());
+                   File file = ImageUtils.getLocalFile(getContext(),r.getImage());
                    if(file.exists()){
                        r.setImage(file.getAbsolutePath());
                    }

@@ -10,11 +10,13 @@
     <string name="NoSaved">No Recipes Saved</string>
     <string name="NoFound">No Recipes Found, Here Is A Joke</string>
     <string name="StartSearching">Start Searching For Recipes, But First Enjoy a joke:</string>
-    
+
     <style name="Person"></style>
 
     <string name="sersving">serving</string>
     <string name="servings">servings</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="ClearList">Clear List</string>
     <!-- TODO: Remove or change this placeholder text -->
 
 </resources>

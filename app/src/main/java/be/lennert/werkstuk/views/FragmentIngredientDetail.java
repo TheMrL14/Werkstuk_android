@@ -25,6 +25,8 @@ import be.lennert.werkstuk.model.apimodels.ExtendedIngredient;
 import be.lennert.werkstuk.model.dbmodels.DBCardIngredient;
 import be.lennert.werkstuk.model.interfaces.IIngredient;
 import be.lennert.werkstuk.model.interfaces.TaskListener;
+import be.lennert.werkstuk.utils.DownloadImage;
+import be.lennert.werkstuk.utils.ImageUtils;
 import be.lennert.werkstuk.utils.StringUtils;
 import be.lennert.werkstuk.viewmodel.CardViewModel;
 import be.lennert.werkstuk.viewmodel.RecipeViewModel;
@@ -34,6 +36,7 @@ public class FragmentIngredientDetail extends Fragment {
     private List<IIngredient> ingredients;
     private int portions = 1;
     TextView txtPortions;
+    private boolean isOnline;
 
     private CardViewModel viewModel;
 
@@ -41,8 +44,9 @@ public class FragmentIngredientDetail extends Fragment {
         //Default constructor
     }
 
-    public FragmentIngredientDetail(List<IIngredient> mData) {
+    public FragmentIngredientDetail(List<IIngredient> mData,boolean isOnline) {
         ingredients = mData;
+        this.isOnline = isOnline;
     }
 
     @Override
@@ -59,7 +63,7 @@ public class FragmentIngredientDetail extends Fragment {
         View view = inflater.inflate(R.layout.fragment_ingredient_detail, container, false);
         final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.rvIngredientsDetail);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(new IngredientsViewAdapter(ingredients, portions));
+        recyclerView.setAdapter(new IngredientsViewAdapter(ingredients, portions,isOnline));
         Button btnRemove = (Button) view.findViewById(R.id.btnSub);
         txtPortions = (TextView) view.findViewById(R.id.txtPortions);
         setPortions(view,recyclerView);
@@ -88,6 +92,13 @@ public class FragmentIngredientDetail extends Fragment {
                 List<DBCardIngredient> dbCardIngredients = new ArrayList<>();
                 for(IIngredient i : ingredients){
                     dbCardIngredients.add(new DBCardIngredient((ExtendedIngredient)i,portions));
+                    final String imagePath =  StringUtils.generateInternalImagePath(i.getName());
+                    new DownloadImage(getContext(),imagePath, new TaskListener<Boolean>() {
+                        @Override
+                        public void onTaskCompleted(Boolean b) {
+
+                        }
+                    }).execute((String) ImageUtils.imagePathIngredients + i.getImage());
                 }
                 viewModel.insertIngredients(dbCardIngredients, new TaskListener() {
                     @Override
@@ -95,8 +106,7 @@ public class FragmentIngredientDetail extends Fragment {
                         viewModel.getAllIngredients().observe(getViewLifecycleOwner(), new Observer<List<DBCardIngredient>>() {
                             @Override
                             public void onChanged(List<DBCardIngredient> ingredients) {
-                                System.out.println(ingredients);
-                                System.out.println("test");
+                            //DO SOMETHING AFTER UPLOAD
                             }
                         });
                     }
@@ -127,7 +137,7 @@ public class FragmentIngredientDetail extends Fragment {
         if(portions == 1)sb.append(getString(R.string.sersving));
         else sb.append(getString(R.string.servings));
         txtPortions.setText(sb.toString());
-        recyclerView.setAdapter(new IngredientsViewAdapter(ingredients, portions));
+        recyclerView.setAdapter(new IngredientsViewAdapter(ingredients, portions,isOnline));
     }
 
 }

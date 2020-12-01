@@ -16,6 +16,9 @@ import be.lennert.werkstuk.model.dbmodels.DBRecipe;
 public abstract class CardDAO {
 
 
+    @Query("DELETE FROM card_ingredients")
+    public abstract void nukeTable();
+
     @Transaction
     @Query("SELECT * FROM card_ingredients")
     public abstract LiveData<List<DBCardIngredient>> loadAllIngredients();
@@ -29,6 +32,12 @@ public abstract class CardDAO {
                 insertInToDb(dbIngredient);
             }
         }
+    }
+
+    public void setDone(DBCardIngredient i){
+        DBCardIngredient dbIngredient = getIngredientById(i.getId());
+        dbIngredient.setDone(i.isDone());
+        insertInToDb(dbIngredient);
     }
 
     @Transaction

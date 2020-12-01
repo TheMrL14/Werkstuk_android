@@ -33,6 +33,12 @@ public class CardRepository {
         new CardRepository.insertAsyncTask(dao,l).execute(i);
     }
 
+    public void nukeTable(){new nukeAsyncTask(dao).execute();}
+
+    public void setDone(DBCardIngredient i){
+        new CardRepository.booleanAsyncTask(dao).execute(i);
+    }
+
     private static class insertAsyncTask extends AsyncTask<List<DBCardIngredient>, Void, Void> {
 
         private CardDAO mAsyncTaskDao;
@@ -57,5 +63,36 @@ public class CardRepository {
             listener.onTaskCompleted(true);
             //System.out.println((List<DBRecipe>) mAsyncTaskDao.loadAllRecipes());
         }
+    }
+
+    private static class booleanAsyncTask extends AsyncTask<DBCardIngredient, Void, Void> {
+
+        private CardDAO mAsyncTaskDao;
+
+        booleanAsyncTask(CardDAO dao) {
+            mAsyncTaskDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(final DBCardIngredient... params) {
+            mAsyncTaskDao.setDone(params[0]);
+            return null;
+        }
+
+    }
+
+    private static class nukeAsyncTask extends AsyncTask<Object, Void, Void> {
+
+        private CardDAO mAsyncTaskDao;
+
+        nukeAsyncTask(CardDAO dao) {
+            mAsyncTaskDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(Object... objects) {
+            mAsyncTaskDao.nukeTable();
+            return null;
+        };
     }
 }
