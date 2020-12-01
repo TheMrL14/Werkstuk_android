@@ -16,13 +16,16 @@ import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import be.lennert.werkstuk.R;
 import be.lennert.werkstuk.adapters.IngredientsViewAdapter;
+import be.lennert.werkstuk.model.DBingredientList;
 import be.lennert.werkstuk.model.apimodels.ExtendedIngredient;
 import be.lennert.werkstuk.model.dbmodels.DBCardIngredient;
+import be.lennert.werkstuk.model.dbmodels.DBIngredient;
 import be.lennert.werkstuk.model.interfaces.IIngredient;
 import be.lennert.werkstuk.model.interfaces.TaskListener;
 import be.lennert.werkstuk.utils.DownloadImage;
@@ -52,7 +55,6 @@ public class FragmentIngredientDetail extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         viewModel = ViewModelProviders.of(this).get(CardViewModel.class);
 
     }
@@ -63,10 +65,50 @@ public class FragmentIngredientDetail extends Fragment {
         View view = inflater.inflate(R.layout.fragment_ingredient_detail, container, false);
         final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.rvIngredientsDetail);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        //IF offline fill with offline image
+        if(!isOnline) ingredients = fillListWithImg(ingredients);
+
         recyclerView.setAdapter(new IngredientsViewAdapter(ingredients, portions,isOnline));
-        Button btnRemove = (Button) view.findViewById(R.id.btnSub);
+
         txtPortions = (TextView) view.findViewById(R.id.txtPortions);
         setPortions(view,recyclerView);
+
+        setBtnOnclickMethods(view,recyclerView);
+
+        return view;
+    }
+
+    // download image
+    private void downloadImage(List<IIngredient> list){
+        for(IIngredient i : list){
+            final String imagePath =  StringUtils.generateInternalImagePath(i.getName());
+            new DownloadImage(getContext(),imagePath, new TaskListener<Boolean>() {
+                @Override
+                public void onTaskCompleted(Boolean b) {}
+            }).execute((String) ImageUtils.imagePathIngredients + i.getImage());
+        }
+    }
+
+    //upload list to Database ()
+    private void uploadToDb(List<DBCardIngredient> list){
+        viewModel.insertIngredients(list, new TaskListener() {
+            @Override
+            public void onTaskCompleted(Object o) {
+                viewModel.getAllIngredients().observe(getViewLifecycleOwner(), new Observer<List<DBCardIngredient>>() {
+                    @Override
+                    public void onChanged(List<DBCardIngredient> ingredients) {
+                        //DO SOMETHING AFTER UPLOAD
+                    }
+                });
+            }
+        });
+    }
+
+    // Button OnCLick Listeners
+    private void setBtnOnclickMethods(View view, final RecyclerView recyclerView){
+
+        Button btnRemove = (Button) view.findViewById(R.id.btnSub);
         btnRemove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,37 +131,13 @@ public class FragmentIngredientDetail extends Fragment {
         btnAddToCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<DBCardIngredient> dbCardIngredients = new ArrayList<>();
-                for(IIngredient i : ingredients){
-                    dbCardIngredients.add(new DBCardIngredient((ExtendedIngredient)i,portions));
-                    final String imagePath =  StringUtils.generateInternalImagePath(i.getName());
-                    new DownloadImage(getContext(),imagePath, new TaskListener<Boolean>() {
-                        @Override
-                        public void onTaskCompleted(Boolean b) {
-
-                        }
-                    }).execute((String) ImageUtils.imagePathIngredients + i.getImage());
-                }
-                viewModel.insertIngredients(dbCardIngredients, new TaskListener() {
-                    @Override
-                    public void onTaskCompleted(Object o) {
-                        viewModel.getAllIngredients().observe(getViewLifecycleOwner(), new Observer<List<DBCardIngredient>>() {
-                            @Override
-                            public void onChanged(List<DBCardIngredient> ingredients) {
-                            //DO SOMETHING AFTER UPLOAD
-                            }
-                        });
-                    }
-                });
-
+                downloadImage(ingredients);
+                uploadToDb(new DBingredientList(ingredients,portions).getIngredients());
             }
         });
-
-        return view;
     }
 
-
-
+    // Portions methods
     private void removePortions(View view) {
         if(this.portions >1)this.portions--;
     }
@@ -140,4 +158,14 @@ public class FragmentIngredientDetail extends Fragment {
         recyclerView.setAdapter(new IngredientsViewAdapter(ingredients, portions,isOnline));
     }
 
+    private List<IIngredient> fillListWithImg(List<IIngredient> list){
+        ArrayList<IIngredient> ingredientsWithImg = new ArrayList<>();
+        for(IIngredient i : list){
+            DBIngredient ing = (DBIngredient) i;
+            File file = ImageUtils.getLocalFile(getContext(), i.getName());
+            if(file.exists())ing.setImage(file.getAbsolutePath());
+            ingredientsWithImg.add(ing);
+        }
+        return ingredientsWithImg;
+    }
 }

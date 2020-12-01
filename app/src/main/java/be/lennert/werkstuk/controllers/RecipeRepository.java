@@ -28,9 +28,15 @@ public class RecipeRepository {
         allRecipes = recipeDAO.loadAllRecipes();
     }
 
+    //Getters
+
     public LiveData<List<DBRecipe>> getAllRecipes() {
         return allRecipes;
     }
+
+
+    // methods
+
     public void getRecipeByID(int id,TaskListener l) {
         new getRecipeByIdAsyncTask(recipeDAO,l).execute(id);
     }
@@ -42,6 +48,9 @@ public class RecipeRepository {
     public void isRecipeSaved(int id, TaskListener l){new isRecipeSavedAsyncTask(recipeDAO,l).execute(id);}
 
     public void deleteRecipe(DBRecipe r, TaskListener l){new deleteAsyncTask(recipeDAO,l).execute(r);}
+
+
+    //Do db methods Async
 
     private static class insertAsyncTask extends AsyncTask<DBRecipe, Void, Void> {
 

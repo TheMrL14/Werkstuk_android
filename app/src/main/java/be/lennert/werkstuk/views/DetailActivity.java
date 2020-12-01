@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import be.lennert.werkstuk.CONSTANTS;
 import be.lennert.werkstuk.MainActivity;
 import be.lennert.werkstuk.R;
 import be.lennert.werkstuk.model.dbmodels.DBRecipe;
@@ -34,6 +35,7 @@ import be.lennert.werkstuk.model.interfaces.APIListener;
 import be.lennert.werkstuk.model.interfaces.IDetailedRecipe;
 
 import be.lennert.werkstuk.model.apimodels.Recipe;
+import be.lennert.werkstuk.model.interfaces.IIngredient;
 import be.lennert.werkstuk.model.interfaces.IRecipe;
 import be.lennert.werkstuk.model.interfaces.TaskListener;
 import be.lennert.werkstuk.utils.DownloadImage;
@@ -50,7 +52,7 @@ public class DetailActivity extends AppCompatActivity {
     private RecipeViewModel recipeViewModel;
 
     IDetailedRecipe recipe;
-    MultiStateToggleButton switchBtn;
+    private MultiStateToggleButton switchBtn;
     private boolean isViewIngredients = true;
     private boolean isOnline;
     private int recipeId;
@@ -62,16 +64,12 @@ public class DetailActivity extends AppCompatActivity {
 
         recipeViewModel = ViewModelProviders.of(this).get(RecipeViewModel.class);
 
-        setContentView(R.layout.activity_recipe_detail);
+        // init View
         getSupportActionBar().hide();
+        setContentView(R.layout.activity_recipe_detail);
 
-
-        //Get DATA from previous page
-        Intent intent = getIntent();
-        isOnline = intent.getBooleanExtra(MainActivity.CONNECTION,false);
-        recipeId = intent.getIntExtra(MainFragmentSearch.RECIPE_ID,0);
-
-        //Set displayed recipe
+        //init vars
+        getSetInitContent();
         setRecipeById(recipeId);
 
 
@@ -172,23 +170,41 @@ public class DetailActivity extends AppCompatActivity {
     //uploads/deletes from database
     public void addRemoveFavourite(View view) {
         isFavourited = !isFavourited;
-        if(isFavourited){uploadRecipe();}
+        if(isFavourited){
+            uploadRecipe(recipe);
+            downloadRecipeImage(recipe);
+            downloadImageIngredients(recipe.getIngredients());
+        }
         else{deleteRecipe();}
 
     }
 
-    private void uploadRecipe(){
+    private void uploadRecipe(IDetailedRecipe myRecipe){
+
+        final String imagePath = StringUtils.generateInternalImagePath(myRecipe.getTitle());
+        recipeViewModel.insert(new DBRecipe(myRecipe, imagePath), new TaskListener<Boolean>() {
+            @Override
+            public void onTaskCompleted(Boolean b) {setHeartButton();}
+        });
+    }
+
+    private void downloadRecipeImage(IDetailedRecipe recipe){
         final String imagePath = StringUtils.generateInternalImagePath(recipe.getTitle());
         new DownloadImage(getApplicationContext(),imagePath, new TaskListener<Boolean>() {
             @Override
             public void onTaskCompleted(Boolean b) {
             }
         }).execute((String) recipe.getImage());
+    }
 
-        recipeViewModel.insert(new DBRecipe(recipe, imagePath), new TaskListener<Boolean>() {
-            @Override
-            public void onTaskCompleted(Boolean b) {setHeartButton();}
-        });
+    private void downloadImageIngredients(List<IIngredient> list){
+        for(IIngredient i : list){
+            final String imagePath =  StringUtils.generateInternalImagePath(i.getName());
+            new DownloadImage(getApplicationContext(),imagePath, new TaskListener<Boolean>() {
+                @Override
+                public void onTaskCompleted(Boolean b) {}
+            }).execute((String) ImageUtils.imagePathIngredients + i.getImage());
+        }
     }
 
     private void deleteRecipe(){
@@ -211,6 +227,12 @@ public class DetailActivity extends AppCompatActivity {
     }
 
 
+    // GET content from init
+    private void getSetInitContent(){
+        final Intent intent = getIntent();
+        isOnline = intent.getBooleanExtra(CONSTANTS.CONNECTION,false);
+        recipeId = intent.getIntExtra(CONSTANTS.RECIPE_ID,0);
+    }
     //Enum for Multe state button ( uses int value )
     enum multiStateToggleChoices{
         //https://codingexplained.com/coding/java/enum-to-integer-and-integer-to-enum

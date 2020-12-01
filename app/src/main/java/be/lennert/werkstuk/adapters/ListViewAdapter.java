@@ -73,12 +73,17 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
+        //Get variables for items
         String recipeName = recipes.get(position).getTitle();
         String image = (String) recipes.get(position).getImage();
+
+        //set variables from items
         viewHolder.getTextView().setText(recipeName);
+
+        //set image (if online download if offline get from local path
         if(isOnline)Picasso.get().load(image).into(viewHolder.getCircleImageView());
         else{
-            Bitmap bmp = BitmapFactory.decodeFile(recipes.get(position).getImage());
+            Bitmap bmp = BitmapFactory.decodeFile(image);
             viewHolder.getCircleImageView().setImageBitmap(bmp);
         }
 

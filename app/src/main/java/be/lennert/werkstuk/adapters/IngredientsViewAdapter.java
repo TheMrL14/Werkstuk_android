@@ -70,18 +70,21 @@ public class IngredientsViewAdapter  extends RecyclerView.Adapter<IngredientsVie
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
-        //
-            String title = ingredientList.get(position).getName();
-            String quantity = ingredientList.get(position).getMetricAmount(this.portions);
-            String image = ImageUtils.imagePathIngredients + ingredientList.get(position).getImage();
+        //Get variables for items
+        String title = ingredientList.get(position).getName();
+        String quantity = ingredientList.get(position).getMetricAmount(this.portions);
+        String image = ingredientList.get(position).getImage();
 
-            viewHolder.getTextViewTitle().setText(title);
-            viewHolder.getTextViewQuantity().setText(quantity);
-           if(isOnline) Picasso.get().load(image).into(viewHolder.getImageView());
-           else{
-               Bitmap bmp = BitmapFactory.decodeFile(image);
-               viewHolder.getImageView().setImageBitmap(bmp);
-           }
+        //set variables from items
+        viewHolder.getTextViewTitle().setText(title);
+        viewHolder.getTextViewQuantity().setText(quantity);
+
+        //set image (if online download if offline get from local path
+        if(isOnline) Picasso.get().load( ImageUtils.imagePathIngredients + image).into( viewHolder.getImageView());
+        else{
+            Bitmap bmp = BitmapFactory.decodeFile( image);
+            viewHolder.getImageView().setImageBitmap(bmp);
+        }
     }
 
     @Override

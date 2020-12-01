@@ -25,10 +25,13 @@ public class CardRepository {
         allIngredients = dao.loadAllIngredients();
     }
 
+    //Getter
     public LiveData<List<DBCardIngredient>> getAllIngredients() {
         return allIngredients;
     }
 
+
+    // methods
     public void insert (List<DBCardIngredient> i, TaskListener l) {
         new CardRepository.insertAsyncTask(dao,l).execute(i);
     }
@@ -38,6 +41,9 @@ public class CardRepository {
     public void setDone(DBCardIngredient i){
         new CardRepository.booleanAsyncTask(dao).execute(i);
     }
+
+
+    //Do db methods Async
 
     private static class insertAsyncTask extends AsyncTask<List<DBCardIngredient>, Void, Void> {
 

@@ -20,8 +20,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 //https://stackoverflow.com/questions/41160019/how-can-i-update-activity-fragment-ui-from-retrofit-onresponse
 
 public class FoodAPIClient {
-    //private final String API_KEY = "4326a1e7b13745e6b7719f97fc3a5ae8"; //hotmail account
-    private final String API_KEY = "624b181a64564261983ad51b102a56df"; //gmail account
+    private final String API_KEY = "4326a1e7b13745e6b7719f97fc3a5ae8"; //hotmail account
+    //private final String API_KEY = "624b181a64564261983ad51b102a56df"; //gmail account
     private final static String BASE_API_URL = "https://api.spoonacular.com/";
     private final int totalSearches = 50;
 
@@ -30,9 +30,8 @@ public class FoodAPIClient {
 
     private ArrayList<ComplexSearchModel> returnList;
 
+    // Singleton for API
     public static FoodAPIClient FOODAPI = getInstance();
-
-
     private FoodAPIClient() {
         OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
         Retrofit retrofit = new Retrofit.Builder()
@@ -49,7 +48,9 @@ public class FoodAPIClient {
         return instance;
     }
 
+    // API methods
 
+    //GET recipe by query
     public void searchRecipes(String query, final APIListener callback){
         Call<ResponseWrapper> call = request.searchRecipes(query,API_KEY,totalSearches);
         call.enqueue(new Callback<ResponseWrapper>() {
@@ -70,6 +71,23 @@ public class FoodAPIClient {
 
     }
 
+    //GET recipe by id
+    public void getRecipeById(int id,final APIListener callback){
+        Call<Recipe> call = request.searchRecipeById(id,false,API_KEY);
+        call.enqueue(new Callback<Recipe>(){
+            @Override
+            public void onResponse(Call<Recipe> call, Response<Recipe> response) {
+                callback.call(response);
+            }
+
+            @Override
+            public void onFailure(Call<Recipe> call, Throwable t) {
+                System.out.println(t.getMessage());
+            }
+        });
+    }
+
+    //Get random Joke
     public void getRandomJoke( final APIListener callback){
         Call<Joke> call = request.getRandomJoke(API_KEY);
         call.enqueue(new Callback<Joke>() {
@@ -89,20 +107,7 @@ public class FoodAPIClient {
         });
     }
 
-    public void getRecipeById(int id,final APIListener callback){
-        Call<Recipe> call = request.searchRecipeById(id,false,API_KEY);
-        call.enqueue(new Callback<Recipe>(){
-            @Override
-            public void onResponse(Call<Recipe> call, Response<Recipe> response) {
-                callback.call(response);
-            }
 
-            @Override
-            public void onFailure(Call<Recipe> call, Throwable t) {
-                System.out.println(t.getMessage());
-            }
-        });
-    }
 
 
 }

@@ -15,12 +15,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import be.lennert.werkstuk.CONSTANTS;
 import be.lennert.werkstuk.MainActivity;
 import be.lennert.werkstuk.R;
 import be.lennert.werkstuk.adapters.ListViewAdapter;
@@ -38,6 +40,9 @@ public class MainFragmentFavourite extends Fragment implements ListViewAdapter.L
 
 
     public FavouritesViewModel vm;
+    SearchView searchView;
+    RecyclerView recyclerView;
+    TextView emptyView;
 
     private ArrayList<DBRecipe> recipes = new ArrayList<DBRecipe>();
      ArrayList<IRecipe> mData;
@@ -50,53 +55,61 @@ public class MainFragmentFavourite extends Fragment implements ListViewAdapter.L
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         vm = ViewModelProviders.of(this).get(FavouritesViewModel.class);
+        downloadData();
         loadView();
+
+    }
+
+
+    public void downloadData(){
         vm.getAllRecipes().observe(getViewLifecycleOwner(), new Observer<List<DBRecipe>>() {
             @Override
             public void onChanged(List<DBRecipe> dbRecipes) {
                 recipes = new ArrayList<>();
-               for(DBRecipe r : dbRecipes){
-                   File file = ImageUtils.getLocalFile(getContext(),r.getImage());
-                   if(file.exists()){
-                       r.setImage(file.getAbsolutePath());
-                   }
-                   recipes.add(r);
-               }
+                for(DBRecipe r : dbRecipes){
+                    File file = ImageUtils.getLocalFile(getContext(),r.getImage());
+                    if(file.exists()) r.setImage(file.getAbsolutePath());
+                    recipes.add(r);
+                }
                 loadView();
             }
         });
     }
 
-    public void loadView(){
 
+    public void loadView(){
         isRecyclerViewEmpty(recipes.isEmpty());
     }
 
     private void isRecyclerViewEmpty(boolean isEmpty) {
-        final TextView emptyView = (TextView) getView().findViewById(R.id.empty_rv_favourite);
-        RecyclerView recyclerView = (RecyclerView) getView().findViewById(R.id.rv_favourite);
+        emptyView = (TextView) getView().findViewById(R.id.empty_rv_favourite);
+        recyclerView = (RecyclerView) getView().findViewById(R.id.rv_favourite);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        if(isEmpty) {
-            recyclerView.setVisibility(View.GONE);
-            emptyView.setVisibility(View.VISIBLE);
-            emptyView.setText(StringUtils.toTitleCase(getString(R.string.NoSaved)));
-        }else{
-            mData = new ArrayList<IRecipe>();
-
-            for (DBRecipe r:recipes)  mData.add((IRecipe) r);
-            recyclerView.setVisibility(View.VISIBLE);
-            emptyView.setVisibility(View.GONE);
-            ListViewAdapter adapter = new ListViewAdapter(mData,this,false);
-            recyclerView.setAdapter(adapter);
-        }
+        if(isEmpty) hideRecyclerView();
+        else showRecyclerView();
 
     }
 
     @Override
     public void onItemClick(int id) {
         Intent intent = new Intent(MainFragmentFavourite.this.getActivity(), DetailActivity.class);
-        intent.putExtra(MainFragmentSearch.RECIPE_ID,id);
-        intent.putExtra(MainActivity.CONNECTION,false);
+        intent.putExtra(CONSTANTS.RECIPE_ID,id);
+        intent.putExtra(CONSTANTS.CONNECTION,false);
         startActivity(intent);
+    }
+
+    private void hideRecyclerView(){
+        recyclerView.setVisibility(View.GONE);
+        emptyView.setVisibility(View.VISIBLE);
+        emptyView.setText(StringUtils.toTitleCase(getString(R.string.NoSaved)));
+    }
+
+    private void showRecyclerView(){
+        mData = new ArrayList<IRecipe>();
+        for (DBRecipe r:recipes)  mData.add((IRecipe) r);
+        recyclerView.setVisibility(View.VISIBLE);
+        emptyView.setVisibility(View.GONE);
+        ListViewAdapter adapter = new ListViewAdapter(mData,this,false);
+        recyclerView.setAdapter(adapter);
     }
 }

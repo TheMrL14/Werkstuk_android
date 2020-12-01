@@ -60,7 +60,7 @@ public class MainFragmentShoppingList extends Fragment {
             @Override
             public void onClick(View v) {
                 vm.nuke();
-
+                loadView();
             }
         });
 
@@ -87,20 +87,7 @@ public class MainFragmentShoppingList extends Fragment {
         final RecyclerView recyclerView = (RecyclerView) getView().findViewById(R.id.rvShoppingList);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         if (isEmpty) {
-            /*
-            recyclerView.setVisibility(View.GONE);
-            emptyView.setVisibility(View.VISIBLE);
-            FOODAPI.getRandomJoke(new APIListener<Joke>() {
-                @Override
-                public void call(Response<Joke> response) {
-                    StringBuilder sb = new StringBuilder();
-                    sb.append(getString(R.string.NoFound));
-                    sb.append("\n \n");
-                    sb.append(response.body().getText());
-                    String text = sb.toString();
-                    emptyView.setText(StringUtils.toTitleCase(text));
-                }
-            });*/
+           //
         } else {
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             IngredientListViewAdapter adapter = new IngredientListViewAdapter(ingredients, getContext(), new IngredientListViewAdapter.CheckBoxListener() {

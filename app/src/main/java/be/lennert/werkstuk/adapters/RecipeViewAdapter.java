@@ -13,6 +13,7 @@ import java.util.List;
 import be.lennert.werkstuk.R;
 import be.lennert.werkstuk.model.interfaces.IIngredient;
 import be.lennert.werkstuk.model.interfaces.IStep;
+import be.lennert.werkstuk.utils.StringUtils;
 
 public class RecipeViewAdapter extends RecyclerView.Adapter<RecipeViewAdapter.ViewHolder> {
 
@@ -50,23 +51,16 @@ public class RecipeViewAdapter extends RecyclerView.Adapter<RecipeViewAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
+        //Get variables for items
         IStep step = steps.get(position);
         String stepText = step.getStep();
         String nr = Integer.toString(step.getNumber());
-        StringBuilder ingredientsList = new StringBuilder();
-        if(step.getIngredients().size() > 0) {
-            for (IIngredient i: step.getIngredients()) {
-                ingredientsList.append(i.getName());
-                ingredientsList.append(", ");
-            }
-        }else{
-           ingredientsList.append(" ");
-        }
+        String ingredientList = StringUtils.generateSummeryWithSeperator(step.getIngredients(),", ");
 
-
+        //Set variables from items
         viewHolder.getTextViewStep().setText(stepText);
         viewHolder.getTextViewStepNr().setText(nr);
-        viewHolder.getTextViewStepIngredients().setText(ingredientsList.toString());
+        viewHolder.getTextViewStepIngredients().setText(ingredientList);
     }
 
     @Override
