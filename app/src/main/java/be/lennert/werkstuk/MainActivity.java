@@ -16,6 +16,7 @@ import be.lennert.werkstuk.viewmodel.RecipeViewModel;
 import be.lennert.werkstuk.views.MainFragmentFavourite;
 import be.lennert.werkstuk.views.MainFragmentSearch;
 import be.lennert.werkstuk.views.MainFragmentShoppingList;
+import be.lennert.werkstuk.views.MainFragmentTimer;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -52,6 +53,9 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case R.id.action_list:
                     selectedFragment = new MainFragmentShoppingList();
+                    break;
+                case R.id.action_timer:
+                    selectedFragment = new MainFragmentTimer();
                     break;
             }
             // It will help to replace the one fragment to other.

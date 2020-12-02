@@ -5,9 +5,9 @@
         android:icon="@drawable/search"
         android:title="Search" />
     <item
-        android:id="@+id/action_calender"
-        android:icon="@drawable/calendar"
-        android:title="Calender" />
+        android:id="@+id/action_timer"
+        android:icon="@drawable/timer"
+        android:title="Timer" />
     <item
         android:id="@+id/action_list"
         android:icon="@drawable/list"
