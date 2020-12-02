@@ -38,7 +38,7 @@ public class IngredientsViewAdapter  extends RecyclerView.Adapter<IngredientsVie
             textViewQuantity = (TextView) itemView.findViewById(R.id.txtIngredientsQuantity);
             imgView = (ImageFilterView) itemView.findViewById(R.id.imgIngredientsThumbnail);
         }
-
+        //Getters
         public TextView getTextViewTitle() {
             return textViewTitle;
         }

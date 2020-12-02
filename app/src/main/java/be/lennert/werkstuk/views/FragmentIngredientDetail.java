@@ -22,8 +22,7 @@ import java.util.List;
 
 import be.lennert.werkstuk.R;
 import be.lennert.werkstuk.adapters.IngredientsViewAdapter;
-import be.lennert.werkstuk.model.DBingredientList;
-import be.lennert.werkstuk.model.apimodels.ExtendedIngredient;
+import be.lennert.werkstuk.model.dbmodels.DBingredientList;
 import be.lennert.werkstuk.model.dbmodels.DBCardIngredient;
 import be.lennert.werkstuk.model.dbmodels.DBIngredient;
 import be.lennert.werkstuk.model.interfaces.IIngredient;
@@ -32,7 +31,6 @@ import be.lennert.werkstuk.utils.DownloadImage;
 import be.lennert.werkstuk.utils.ImageUtils;
 import be.lennert.werkstuk.utils.StringUtils;
 import be.lennert.werkstuk.viewmodel.CardViewModel;
-import be.lennert.werkstuk.viewmodel.RecipeViewModel;
 
 public class FragmentIngredientDetail extends Fragment {
 

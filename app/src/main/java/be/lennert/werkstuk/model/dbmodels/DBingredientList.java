@@ -1,4 +1,4 @@
-package be.lennert.werkstuk.model;
+package be.lennert.werkstuk.model.dbmodels;
 
 import java.util.ArrayList;
 import java.util.List;

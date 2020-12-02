@@ -13,4 +13,5 @@
     <string name="sersving">persoon</string>
     <string name="servings">personen</string>
     <string name="ClearList">"verwijder lijstje "</string>
+    <string name="TimerService">wekkers</string>
 </resources>
