@@ -24,6 +24,7 @@ import be.lennert.werkstuk.R;
 import be.lennert.werkstuk.adapters.IngredientListViewAdapter;
 import be.lennert.werkstuk.model.dbmodels.DBCardIngredient;
 import be.lennert.werkstuk.utils.ImageUtils;
+import be.lennert.werkstuk.utils.StringUtils;
 import be.lennert.werkstuk.viewmodel.CardViewModel;
 
 public class MainFragmentShoppingList extends Fragment {
@@ -98,7 +99,7 @@ public class MainFragmentShoppingList extends Fragment {
         recyclerView.setVisibility(View.GONE);
         btnClear.setVisibility(View.GONE);
         emptyView.setVisibility(View.VISIBLE);
-        emptyView.setText(getString(R.string.EmptyShoppingList));
+        emptyView.setText(StringUtils.toTitleCase(getString(R.string.EmptyShoppingList)));
     }
 
     //delete all ingredients in DB

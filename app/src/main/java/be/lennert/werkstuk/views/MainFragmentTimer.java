@@ -30,6 +30,7 @@ import be.lennert.werkstuk.adapters.TimerViewAdapter;
 import be.lennert.werkstuk.model.Timer;
 import be.lennert.werkstuk.model.dbmodels.DBCardIngredient;
 import be.lennert.werkstuk.services.TimerService;
+import be.lennert.werkstuk.utils.StringUtils;
 
 public class MainFragmentTimer extends Fragment {
 
@@ -99,7 +100,7 @@ public class MainFragmentTimer extends Fragment {
     private void hideRecyclerView() {
         recyclerView.setVisibility(View.GONE);
         emptyView.setVisibility(View.VISIBLE);
-        emptyView.setText(getString(R.string.EmptyTimerList));
+        emptyView.setText(StringUtils.toTitleCase(getString(R.string.EmptyTimerList)));
     }
 
     private void checkAndStartNewTimers(){

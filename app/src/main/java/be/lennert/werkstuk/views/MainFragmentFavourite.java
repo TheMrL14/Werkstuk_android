@@ -78,16 +78,11 @@ public class MainFragmentFavourite extends Fragment implements ListViewAdapter.L
 
 
     public void loadView(){
-        isRecyclerViewEmpty(recipes.isEmpty());
-    }
-
-    private void isRecyclerViewEmpty(boolean isEmpty) {
         emptyView = (TextView) getView().findViewById(R.id.empty_rv_favourite);
         recyclerView = (RecyclerView) getView().findViewById(R.id.rv_favourite);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        if(isEmpty) hideRecyclerView();
+        if(recipes.isEmpty()) hideRecyclerView();
         else showRecyclerView();
-
     }
 
     @Override
