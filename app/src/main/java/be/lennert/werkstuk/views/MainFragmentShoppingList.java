@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.io.File;
@@ -22,22 +22,17 @@ import java.util.List;
 
 import be.lennert.werkstuk.R;
 import be.lennert.werkstuk.adapters.IngredientListViewAdapter;
-import be.lennert.werkstuk.adapters.ListViewAdapter;
-import be.lennert.werkstuk.model.apimodels.Joke;
 import be.lennert.werkstuk.model.dbmodels.DBCardIngredient;
-import be.lennert.werkstuk.model.dbmodels.DBRecipe;
-import be.lennert.werkstuk.model.interfaces.APIListener;
 import be.lennert.werkstuk.utils.ImageUtils;
-import be.lennert.werkstuk.utils.StringUtils;
 import be.lennert.werkstuk.viewmodel.CardViewModel;
-import be.lennert.werkstuk.viewmodel.FavouritesViewModel;
-import retrofit2.Response;
-
-import static be.lennert.werkstuk.controllers.FoodAPIClient.FOODAPI;
 
 public class MainFragmentShoppingList extends Fragment {
 
     public CardViewModel vm;
+
+    TextView emptyView;
+    RecyclerView recyclerView;
+    Button btnClear;
 
     private ArrayList<DBCardIngredient> ingredients = new ArrayList<DBCardIngredient>();
 
@@ -54,56 +49,84 @@ public class MainFragmentShoppingList extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        //Set view vars
+        emptyView = (TextView) getView().findViewById(R.id.empty_rv_shoppingList);
+        recyclerView = (RecyclerView) getView().findViewById(R.id.rvShoppingList);
+        btnClear = (Button) getView().findViewById(R.id.btnClearCard);
+
+        // Add DB connection & set item observer
         vm = ViewModelProviders.of(this).get(CardViewModel.class);
+        vm.getAllIngredients().observe(getViewLifecycleOwner(), onItemChange());
+
+        // listener for clear button
+        view.findViewById(R.id.btnClearCard).setOnClickListener(deleteAllItems());
+
+        //load view
         loadView();
-        view.findViewById(R.id.btnClearCard).setOnClickListener(new View.OnClickListener() {
+    }
+
+    private void loadView(){
+        if (ingredients.isEmpty()) hideRecyclerView();
+        else showRecyclerView();
+    }
+
+    //show list and button if items in list
+    private void showRecyclerView() {
+        recyclerView.setVisibility(View.VISIBLE);
+        btnClear.setVisibility(View.VISIBLE);
+        emptyView.setVisibility(View.GONE);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        IngredientListViewAdapter adapter = new IngredientListViewAdapter(ingredients, getContext(), new IngredientListViewAdapter.CheckBoxListener() {
+            @Override
+            public void onItemClick(String id, boolean isDone) {
+                for(DBCardIngredient i : ingredients) {
+                    if(i.getId() == id){
+                        i.setDone(isDone);
+                        vm.setIsDone(i);
+                    }
+                }
+            }
+        });
+        recyclerView.setAdapter(adapter);
+        System.out.println(ingredients);
+    }
+
+    //show text if list = empty
+    private void hideRecyclerView() {
+        recyclerView.setVisibility(View.GONE);
+        btnClear.setVisibility(View.GONE);
+        emptyView.setVisibility(View.VISIBLE);
+        emptyView.setText(getString(R.string.EmptyShoppingList));
+    }
+
+    //delete all ingredients in DB
+    private View.OnClickListener deleteAllItems(){
+        return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 vm.nuke();
                 loadView();
             }
-        });
+        };
+    }
 
-        vm.getAllIngredients().observe(getViewLifecycleOwner(), new Observer<List<DBCardIngredient>>() {
+    //Ingredient observer when items are added or deleted
+    private Observer<List<DBCardIngredient>> onItemChange(){
+        return new Observer<List<DBCardIngredient>>() {
             @Override
             public void onChanged(List<DBCardIngredient> dbIngredient) {
                 ingredients = new ArrayList<>();
                 for(DBCardIngredient i : dbIngredient){
+                    //get image for ingredient if exist
                     File file = ImageUtils.getLocalFile(getContext(), i.getName());
                     if(file.exists())i.setImage(file.getAbsolutePath());
                     ingredients.add(i);
                 }
                 loadView();
             }
-        });
-    }
-
-    public void loadView(){
-
-        isRecyclerViewEmpty(ingredients.isEmpty());
-    }
-    private void isRecyclerViewEmpty(boolean isEmpty) {
-        final TextView emptyView = (TextView) getView().findViewById(R.id.empty_rv_search);
-        final RecyclerView recyclerView = (RecyclerView) getView().findViewById(R.id.rvShoppingList);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        if (isEmpty) {
-           //
-        } else {
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            IngredientListViewAdapter adapter = new IngredientListViewAdapter(ingredients, getContext(), new IngredientListViewAdapter.CheckBoxListener() {
-                @Override
-                public void onItemClick(String id, boolean isDone) {
-                    for(DBCardIngredient i : ingredients) {
-                        if(i.getId() == id){
-                            i.setDone(isDone);
-                            vm.setIsDone(i);
-                        }
-                    }
-                }
-            });
-            recyclerView.setAdapter(adapter);
-            System.out.println(ingredients);
-        }
+        };
     }
 
 }

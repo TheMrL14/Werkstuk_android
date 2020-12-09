@@ -1,6 +1,7 @@
 package be.lennert.werkstuk.utils;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import be.lennert.werkstuk.model.interfaces.IIngredient;
 
@@ -41,5 +42,33 @@ public  class StringUtils {
             ingredientsList.append(seperator);
         }
         return ingredientsList.toString();
+    }
+
+
+    public static String millisToString(long millis){
+        long hours = millis / (1000 * 60 * 60);
+        long minutes = (millis / (1000 * 60)) % 60;
+        long seconds = (millis / 1000) % 60;
+
+
+        return generateHMSTime(hours,minutes,seconds,":");
+    }
+
+    private static String generateHMSTime(long hours,long min, long s, String seperator){
+        StringBuilder sb = new StringBuilder(64);
+        sb.append(hours);
+        sb.append(seperator);
+        sb.append(min);
+        sb.append(seperator);
+        sb.append(s);
+        return sb.toString();
+    }
+
+    public static long timeToMilis(long h, long m, long s){
+        long mili = 0;
+        mili += TimeUnit.HOURS.toMillis(h);
+        mili += TimeUnit.MINUTES.toMillis(m);
+        mili += TimeUnit.SECONDS.toMillis(s);
+        return mili;
     }
 }

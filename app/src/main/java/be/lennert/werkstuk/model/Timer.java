@@ -1,82 +1,88 @@
 package be.lennert.werkstuk.model;
 
-import android.os.CountDownTimer;
+import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Build;
 
+import androidx.annotation.RequiresApi;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
+import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-public class Timer {
+import be.lennert.werkstuk.model.interfaces.ITimerListener;
+import be.lennert.werkstuk.services.TimerService;
+import be.lennert.werkstuk.utils.StringUtils;
 
-    private int id;
-    private long mMillisInFuture;
-    private final long mCountdownInterval = TimeUnit.SECONDS.toMillis(1);
-    private long mPauseTime;
+public class Timer implements Serializable {
+
+
+
+    private long currentTime;
+    private long totalTime;
     private boolean isPaused = false;
+    private boolean isFinished = false;
+    private Intent intent;
+    BroadcastReceiver receiver;
     private String title;
-    private CountDownTimer timer;
-
-    public CountDownTimer StartTimer(){
-        return new CountDownTimer(mMillisInFuture,mCountdownInterval){
-
-            @Override
-            public void onTick(long millisUntilFinished) {
-
-            }
-
-            @Override
-            public void onFinish() {
-
-            }
-        };
+    private int id;
 
 
-    }
-
-    private long timeToMilis(long h, long m, long s){
-        long mili = 0;
-        mili += TimeUnit.HOURS.toMillis(h);
-        mili += TimeUnit.MINUTES.toMillis(m);
-        mili += TimeUnit.SECONDS.toMillis(s);
-        return mili;
-    }
-
-
-    public Timer(int id, String title, long h, long m, long s) {
+    public Timer(int id,String title, long h, long m, long s) {
         this.id = id;
         this.title = title;
-        this.isPaused = false;
-        this.mMillisInFuture =  mMillisInFuture = timeToMilis(h,m,s);
-        this.timer = StartTimer();
+        this.totalTime= StringUtils.timeToMilis(h,m,s);
     }
 
-    public int getId() {
-        return id;
+    public Timer(String title, long h, long m, long s) {
+        this.title = title;
+        this.totalTime= StringUtils.timeToMilis(h,m,s);
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void start(Context context,Activity activity){
+        intent = new Intent(context, TimerService.class);
+        intent.putExtra(TimerService.MILLIS,this.totalTime);
+        intent.putExtra(TimerService.ID,this.id);
+        activity.startService(intent);
     }
 
-    public boolean isPaused() {
-        return isPaused;
+    public void stop(Activity activity){
+        activity.stopService(intent);
     }
 
-    public void setPaused(boolean paused) {
-        isPaused = paused;
+    public void pause(Activity activity){
+        activity.stopService(intent);
     }
 
-    public CountDownTimer getTimer() {
-        return timer;
+
+    public void setUITime(long time)  {
+        currentTime = time;
     }
 
-    public void setTimer(CountDownTimer timer) {
-        this.timer = timer;
+    public String getUITime(){
+        return StringUtils.millisToString(currentTime);
     }
 
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public boolean isPaused() {
+        return isPaused;
     }
+
+    public void setId(int id){
+        this.id = id;
+    }
+
 }

@@ -37,11 +37,12 @@
 
     <Switch
         android:id="@+id/swtchClockOnOff"
+        android:theme="@style/switch_style"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="right|center_vertical"
         android:layout_weight="1"
         android:gravity="right|center_vertical"
-        android:text= "@null" />
+        android:text="@null" />
 
 </LinearLayout>

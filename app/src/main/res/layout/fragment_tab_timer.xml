@@ -8,26 +8,37 @@
 
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_timers"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
+        app:layout_constraintTop_toTopOf="parent">
 
     </androidx.recyclerview.widget.RecyclerView>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btnToCart"
-        android:layout_width="wrap_content"
+    <Button
+        android:id="@+id/btnToTimerForm"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:layout_margin="15dp"
+        android:layout_marginHorizontal="100dp"
+        android:layout_marginVertical="20dp"
         android:clickable="true"
-        android:src="@drawable/plus"
-        android:tint="@color/white"
+        android:text="@string/AddTimer"
+        android:textColor="@color/white"
         app:backgroundTint="@color/colorPrimary"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rv_timers"
         app:rippleColor="@color/colorPrimaryDark" />
+
+    <TextView
+        android:id="@+id/empty_rv_timer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone"
+        android:text="place holder"
+        android:background="@color/colorBg"
+        android:paddingHorizontal="10dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

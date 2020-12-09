@@ -6,17 +6,20 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.ListFragment;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import be.lennert.werkstuk.controllers.FoodAPIClient;
+import be.lennert.werkstuk.services.TimerService;
 import be.lennert.werkstuk.viewmodel.RecipeViewModel;
 import be.lennert.werkstuk.views.MainFragmentFavourite;
 import be.lennert.werkstuk.views.MainFragmentSearch;
 import be.lennert.werkstuk.views.MainFragmentShoppingList;
 import be.lennert.werkstuk.views.MainFragmentTimer;
+import be.lennert.werkstuk.views.TimerFormActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,14 +32,21 @@ public class MainActivity extends AppCompatActivity {
 
 
         setContentView(R.layout.activity_main);
-
         getSupportActionBar().hide();
 
 
         BottomNavigationView navBottom = (BottomNavigationView) findViewById(R.id.navBottom);
         navBottom.setOnNavigationItemSelectedListener(navBottomListener);
 
-        initFragment(new MainFragmentSearch());
+        Intent i = getIntent();
+
+        if(i.getBooleanExtra(TimerFormActivity.NEWTIMER, false)){
+            initFragment(new MainFragmentTimer());
+            navBottom.setSelectedItemId(R.id.action_timer);
+        }
+        else  initFragment(new MainFragmentSearch());
+
+
 
     }
 

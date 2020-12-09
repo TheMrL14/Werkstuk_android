@@ -49,12 +49,63 @@ public class MainFragmentSearch extends Fragment implements ListViewAdapter.List
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        //Set view vars
         emptyView = (TextView) getView().findViewById(R.id.empty_rv_search);
         recyclerView = (RecyclerView) getView().findViewById(R.id.rvSearchedRecipes);
+        searchView = (SearchView) getView().findViewById(R.id.searchBar);
+
+        //set listeners
+        searchView.setOnQueryTextListener(queryTextListener());
+
+        //load init view
         hideRecyclerView();
 
-        searchView = (SearchView) getView().findViewById(R.id.searchBar);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+    }
+
+    private void loadView() {
+        if (recipes.isEmpty())hideRecyclerView();
+        else showRecyclerView();
+    }
+
+    private String createJokeText(Response<Joke> response) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getString(R.string.NoFound));
+        sb.append("\n \n");
+        sb.append(response.body().getText());
+        String text = sb.toString();
+        return StringUtils.toTitleCase(text);
+    }
+
+    private void showRecyclerView() {
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setVisibility(View.VISIBLE);
+        emptyView.setVisibility(View.GONE);
+        ListViewAdapter adapter = new ListViewAdapter(recipes, this, true);
+        recyclerView.setAdapter(adapter);
+    }
+
+    private void hideRecyclerView() {
+        recyclerView.setVisibility(View.GONE);
+        emptyView.setVisibility(View.VISIBLE);
+        FOODAPI.getRandomJoke(new APIListener<Joke>() {
+            @Override
+            public void call(Response<Joke> response) {
+                emptyView.setText(createJokeText(response));
+            }
+        });
+    }
+
+    @Override
+    public void onItemClick(int id) {
+        Intent intent = new Intent(MainFragmentSearch.this.getActivity(), DetailActivity.class);
+        intent.putExtra(CONSTANTS.RECIPE_ID, id);
+        intent.putExtra(CONSTANTS.CONNECTION, true);
+        startActivity(intent);
+    }
+
+    SearchView.OnQueryTextListener queryTextListener(){
+        return new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 FOODAPI.searchRecipes(query, new APIListener<ResponseWrapper>() {
@@ -74,53 +125,6 @@ public class MainFragmentSearch extends Fragment implements ListViewAdapter.List
             public boolean onQueryTextChange(String newText) {
                 return false;
             }
-        });
-
-    }
-
-    public void loadView() {
-        isRecyclerViewEmpty(recipes.isEmpty());
-    }
-
-    private void isRecyclerViewEmpty(boolean isEmpty) {
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        if (isEmpty)hideRecyclerView();
-        else showRecyclerView();
-    }
-
-    private String createJokeText(Response<Joke> response) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getString(R.string.NoFound));
-        sb.append("\n \n");
-        sb.append(response.body().getText());
-        String text = sb.toString();
-        return StringUtils.toTitleCase(text);
-    }
-
-
-    @Override
-    public void onItemClick(int id) {
-        Intent intent = new Intent(MainFragmentSearch.this.getActivity(), DetailActivity.class);
-        intent.putExtra(CONSTANTS.RECIPE_ID, id);
-        intent.putExtra(CONSTANTS.CONNECTION, true);
-        startActivity(intent);
-    }
-
-    public void showRecyclerView() {
-        recyclerView.setVisibility(View.VISIBLE);
-        emptyView.setVisibility(View.GONE);
-        ListViewAdapter adapter = new ListViewAdapter(recipes, this, true);
-        recyclerView.setAdapter(adapter);
-    }
-
-    public void hideRecyclerView() {
-        recyclerView.setVisibility(View.GONE);
-        emptyView.setVisibility(View.VISIBLE);
-        FOODAPI.getRandomJoke(new APIListener<Joke>() {
-            @Override
-            public void call(Response<Joke> response) {
-                emptyView.setText(createJokeText(response));
-            }
-        });
+        };
     }
 }

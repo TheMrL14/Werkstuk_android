@@ -18,6 +18,9 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="ClearList">Clear List</string>
     <string name="TimerService">timers</string>
+    <string name="AddTimer">Add</string>
+    <string name="EmptyShoppingList">No Ingredients on your list</string>
+    <string name="EmptyTimerList">No timers created</string>
     <!-- TODO: Remove or change this placeholder text -->
 
 

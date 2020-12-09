@@ -7,13 +7,15 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+       >
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvShoppingList"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            >
 
         </androidx.recyclerview.widget.RecyclerView>
 
@@ -27,6 +29,17 @@
             android:background="@drawable/button_bg"
             android:paddingHorizontal="50dp"
             android:text="@string/ClearList"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:layout_marginBottom="100dp"/>
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/empty_rv_shoppingList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone"
+        android:text="place holder"
+        android:background="@color/colorBg"
+        android:paddingHorizontal="10dp"/>
 </FrameLayout>

@@ -14,4 +14,7 @@
     <string name="servings">personen</string>
     <string name="ClearList">"verwijder lijstje "</string>
     <string name="TimerService">wekkers</string>
+    <string name="AddTimer">Voeg Toe</string>
+    <string name="EmptyShoppingList">"geen ingredienten op je lijstje "</string>
+    <string name="EmptyTimerList">geen timers aangemaakt</string>
 </resources>
