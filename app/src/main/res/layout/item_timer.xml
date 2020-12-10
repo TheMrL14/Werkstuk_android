@@ -19,6 +19,7 @@
         <TextView
             android:id="@+id/txtStepTitle"
             style="@style/normal_text"
+            android:textSize="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -28,6 +29,7 @@
         <TextView
             android:id="@+id/txtClock"
             style="@style/small_text"
+            android:textSize="40dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="right"
@@ -39,15 +41,11 @@
 
     <ImageButton
         android:id="@+id/swtchClockOnOff"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="60dp"
         android:background="@color/white"
-        android:onClick="addRemoveFavourite"
-        android:padding="10dp"
+        android:padding="15dp"
         android:gravity="right"
-        android:clickable="true"
         android:scaleType="fitEnd"
         android:tint="@color/colorPrimary"
         app:srcCompat="@drawable/pause" />

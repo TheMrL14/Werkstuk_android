@@ -50,6 +50,7 @@ public class Timer implements Serializable {
     }
 
     public void start(Context context,Activity activity){
+        isPaused = false;
         intent = new Intent(context, TimerService.class);
         intent.putExtra(TimerService.MILLIS,this.totalTimeLeft);
         intent.putExtra(TimerService.ID,this.id);
@@ -64,10 +65,10 @@ public class Timer implements Serializable {
         isPaused = true;
         totalTimeLeft = currentTime;
         activity.stopService(intent);
+
     }
 
     public void play(Context context,Activity activity){
-        isPaused = false;
         this.start(context,activity);
     }
 
@@ -92,4 +93,7 @@ public class Timer implements Serializable {
         this.id = id;
     }
 
+    public int getId() {
+        return id;
+    }
 }

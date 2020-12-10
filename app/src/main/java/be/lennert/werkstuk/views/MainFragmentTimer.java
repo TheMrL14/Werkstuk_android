@@ -45,6 +45,7 @@ public class MainFragmentTimer extends Fragment {
     private BroadcastReceiver receiver;
     private TextView emptyView;
     private RecyclerView recyclerView;
+    private  TimerViewAdapter adapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -87,6 +88,9 @@ public class MainFragmentTimer extends Fragment {
 
     public void loadView(){
         if(getView() == null)  return;
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        adapter = new TimerViewAdapter(timers,playPauseTimer());
+        recyclerView.setAdapter(adapter);
         if (timers.isEmpty()) hideRecyclerView();
         else showRecyclerView();
     }
@@ -94,9 +98,7 @@ public class MainFragmentTimer extends Fragment {
     private void showRecyclerView(){
         recyclerView.setVisibility(View.VISIBLE);
         emptyView.setVisibility(View.GONE);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        TimerViewAdapter adapter = new TimerViewAdapter(timers,playPauseTimer());
-        recyclerView.setAdapter(adapter);
+
     }
 
     private void hideRecyclerView() {
@@ -121,7 +123,9 @@ public class MainFragmentTimer extends Fragment {
                 if(!isDone) {
                     long timeInMillis = intent.getLongExtra(TimerService.TIME, 0);
                     timers.get(id).setUITime(timeInMillis);
-                    loadView();
+                    adapter.updateData(timers.get(id));
+                    adapter.notifyItemChanged(id);
+                    adapter.notifyDataSetChanged();
                 }else {
                     //
                 }
@@ -154,9 +158,12 @@ public class MainFragmentTimer extends Fragment {
             @Override
             public void ITimerClickListener(int position) {
                 Timer t = timers.get(position);
-
-                if(t.isPaused())t.start(getContext(),getActivity());
-                else t.pause(getActivity());
+                if(t.isPaused()){
+                    t.start(getContext(),getActivity());
+                } else{
+                    t.pause(getActivity());
+                }
+                adapter.notifyItemChanged(position);
             }
         };
     }

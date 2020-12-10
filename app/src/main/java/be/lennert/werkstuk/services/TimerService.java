@@ -79,4 +79,11 @@ public class TimerService extends Service {
         return null;
     }
 
+
+    @Override
+    public void onDestroy() {
+        this.timer.cancel();
+        this.timer = null;
+        super.onDestroy();
+    }
 }

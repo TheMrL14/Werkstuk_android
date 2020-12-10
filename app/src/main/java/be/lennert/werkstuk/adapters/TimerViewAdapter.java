@@ -30,8 +30,6 @@ public class TimerViewAdapter extends RecyclerView.Adapter<TimerViewAdapter.View
         private final TextView txtTitle, txtTime;
         private final ImageButton aSwitch;
 
-
-
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -39,12 +37,6 @@ public class TimerViewAdapter extends RecyclerView.Adapter<TimerViewAdapter.View
             txtTime = (TextView) itemView.findViewById(R.id.txtClock);
             aSwitch = (ImageButton) itemView.findViewById(R.id.swtchClockOnOff);
 
-            aSwitch.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.ITimerClickListener(getAdapterPosition());
-                }
-            });
 
         }
 
@@ -67,28 +59,41 @@ public class TimerViewAdapter extends RecyclerView.Adapter<TimerViewAdapter.View
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_timer, parent, false);
+        final ViewHolder holder = new ViewHolder(view);
 
-        return new TimerViewAdapter.ViewHolder(view);
+        holder.aSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.ITimerClickListener(holder.getAdapterPosition());
+            }
+        });
+        return holder;
+
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         String time = StringUtils.toTitleCase(timers.get(position).getUITime());
         String title = StringUtils.toTitleCase(timers.get(position).getTitle());
         boolean isRunning =!timers.get(position).isPaused();
 
-       holder.getTxtTime().setText(time);
+        holder.getTxtTime().setText(time);
         holder.getTxtTitle().setText(title);
+
         if(isRunning)holder.getASwitch().setImageResource(R.drawable.pause);
         else holder.getASwitch().setImageResource(R.drawable.play);
-
-
     }
+
+
+
 
     @Override
     public int getItemCount() {
         return this.timers.size();
+    }
+
+    public void updateData(Timer t){
+        this.timers.set(t.getId(),t);
     }
 
 }
