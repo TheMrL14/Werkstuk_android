@@ -32,12 +32,15 @@ import be.lennert.werkstuk.utils.ImageUtils;
 import be.lennert.werkstuk.utils.StringUtils;
 import be.lennert.werkstuk.viewmodel.CardViewModel;
 
+
+
 public class FragmentIngredientDetail extends Fragment {
 
     private List<IIngredient> ingredients;
     private int portions = 1;
     TextView txtPortions;
     private boolean isOnline;
+    private boolean uploaded,uploading = false;
 
     private CardViewModel viewModel;
 
@@ -89,18 +92,29 @@ public class FragmentIngredientDetail extends Fragment {
     }
 
     //upload list to Database ()
-    private void uploadToDb(List<DBCardIngredient> list){
-        viewModel.insertIngredients(list, new TaskListener() {
+    private void uploadToDb(final List<DBCardIngredient> list){
+        new Thread(new Runnable() {
             @Override
-            public void onTaskCompleted(Object o) {
-                viewModel.getAllIngredients().observe(getViewLifecycleOwner(), new Observer<List<DBCardIngredient>>() {
+            public void run() {
+                uploading = true;
+                viewModel.insertIngredients(list, new TaskListener() {
                     @Override
-                    public void onChanged(List<DBCardIngredient> ingredients) {
-                        //DO SOMETHING AFTER UPLOAD
+                    public void onTaskCompleted(Object o) {
+                        viewModel.getAllIngredients().observe(getViewLifecycleOwner(),uploadObserver());
                     }
                 });
             }
         });
+    }
+
+    private Observer<List<DBCardIngredient>> uploadObserver(){
+        return new Observer<List<DBCardIngredient>>() {
+            @Override
+            public void onChanged(List<DBCardIngredient> ingredients) {
+                uploaded = true;
+                uploading = false;
+            }
+        };
     }
 
     // Button OnCLick Listeners
@@ -126,13 +140,24 @@ public class FragmentIngredientDetail extends Fragment {
         });
 
         FloatingActionButton btnAddToCard = (FloatingActionButton) view.findViewById(R.id.btnToCart);
-        btnAddToCard.setOnClickListener(new View.OnClickListener() {
+        btnAddToCard.setOnClickListener(saveIngredients());
+    }
+
+    private View.OnClickListener saveIngredients(){
+        return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 downloadImage(ingredients);
                 uploadToDb(new DBingredientList(ingredients,portions).getIngredients());
+                while (!uploaded && uploading) {
+                    try {
+                        wait(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-        });
+        };
     }
 
     // Portions methods
@@ -145,8 +170,6 @@ public class FragmentIngredientDetail extends Fragment {
     }
 
     private void setPortions(View view, RecyclerView recyclerView){
-
-
         StringBuilder sb = new StringBuilder("");
         sb.append(portions);
         sb.append(" ");

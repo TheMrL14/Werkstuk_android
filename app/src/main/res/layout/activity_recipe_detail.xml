@@ -49,6 +49,7 @@
                 android:layout_marginTop="5dp"
                 android:background="@color/white"
                 android:gravity="right"
+
                 android:onClick="addRemoveFavourite"
                 android:padding="10dp"
                 android:scaleType="fitXY"

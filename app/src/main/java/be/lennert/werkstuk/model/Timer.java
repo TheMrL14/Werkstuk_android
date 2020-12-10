@@ -29,7 +29,7 @@ public class Timer implements Serializable {
 
 
     private long currentTime;
-    private long totalTime;
+    private long totalTimeLeft;
     private boolean isPaused = false;
     private boolean isFinished = false;
     private Intent intent;
@@ -41,17 +41,17 @@ public class Timer implements Serializable {
     public Timer(int id,String title, long h, long m, long s) {
         this.id = id;
         this.title = title;
-        this.totalTime= StringUtils.timeToMilis(h,m,s);
+        this.totalTimeLeft= StringUtils.timeToMilis(h,m,s);
     }
 
     public Timer(String title, long h, long m, long s) {
         this.title = title;
-        this.totalTime= StringUtils.timeToMilis(h,m,s);
+        this.totalTimeLeft= StringUtils.timeToMilis(h,m,s);
     }
 
     public void start(Context context,Activity activity){
         intent = new Intent(context, TimerService.class);
-        intent.putExtra(TimerService.MILLIS,this.totalTime);
+        intent.putExtra(TimerService.MILLIS,this.totalTimeLeft);
         intent.putExtra(TimerService.ID,this.id);
         activity.startService(intent);
     }
@@ -61,7 +61,14 @@ public class Timer implements Serializable {
     }
 
     public void pause(Activity activity){
+        isPaused = true;
+        totalTimeLeft = currentTime;
         activity.stopService(intent);
+    }
+
+    public void play(Context context,Activity activity){
+        isPaused = false;
+        this.start(context,activity);
     }
 
 

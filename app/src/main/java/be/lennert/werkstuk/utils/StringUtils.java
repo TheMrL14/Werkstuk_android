@@ -49,18 +49,16 @@ public  class StringUtils {
         long hours = millis / (1000 * 60 * 60);
         long minutes = (millis / (1000 * 60)) % 60;
         long seconds = (millis / 1000) % 60;
-
-
         return generateHMSTime(hours,minutes,seconds,":");
     }
 
     private static String generateHMSTime(long hours,long min, long s, String seperator){
         StringBuilder sb = new StringBuilder(64);
-        sb.append(hours);
+        sb.append(makeLong2Digits(hours));
         sb.append(seperator);
-        sb.append(min);
+        sb.append(makeLong2Digits(min));
         sb.append(seperator);
-        sb.append(s);
+        sb.append(makeLong2Digits(s));
         return sb.toString();
     }
 
@@ -70,5 +68,10 @@ public  class StringUtils {
         mili += TimeUnit.MINUTES.toMillis(m);
         mili += TimeUnit.SECONDS.toMillis(s);
         return mili;
+    }
+
+    private static String makeLong2Digits(long x){
+        if(x>10)return String.valueOf(x);
+        return "0"+ x;
     }
 }

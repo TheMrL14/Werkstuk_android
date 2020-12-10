@@ -3,6 +3,8 @@ package be.lennert.werkstuk.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -13,16 +15,20 @@ import java.util.ArrayList;
 
 import be.lennert.werkstuk.R;
 import be.lennert.werkstuk.model.Timer;
+import be.lennert.werkstuk.model.interfaces.ITimerClickListener;
+import be.lennert.werkstuk.model.interfaces.ITimerListener;
 import be.lennert.werkstuk.utils.StringUtils;
 
-public class TimerViewAdapter extends RecyclerView.Adapter<TimerViewAdapter.ViewHolder> {
+public class TimerViewAdapter extends RecyclerView.Adapter<TimerViewAdapter.ViewHolder>  {
 
     private ArrayList<Timer> timers;
+    private static ITimerClickListener listener;
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView txtTitle, txtTime;
-        private final Switch aSwitch;
+        private final ImageButton aSwitch;
 
 
 
@@ -31,16 +37,28 @@ public class TimerViewAdapter extends RecyclerView.Adapter<TimerViewAdapter.View
 
             txtTitle = (TextView) itemView.findViewById(R.id.txtStepTitle);
             txtTime = (TextView) itemView.findViewById(R.id.txtClock);
-            aSwitch = (Switch) itemView.findViewById(R.id.swtchClockOnOff);
+            aSwitch = (ImageButton) itemView.findViewById(R.id.swtchClockOnOff);
+
+            aSwitch.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.ITimerClickListener(getAdapterPosition());
+                }
+            });
+
         }
 
         //Getters
         public TextView getTxtTitle() {return txtTitle; }
         public TextView getTxtTime() {return txtTime;}
-        public Switch getASwitch() {return aSwitch;}
+        public ImageButton getASwitch() {return aSwitch;}
+
+
     }
 
-    public TimerViewAdapter(ArrayList<Timer> mData) {
+
+    public TimerViewAdapter(ArrayList<Timer> mData, ITimerClickListener l) {
+        this.listener = l;
         this.timers =mData;
     }
 
@@ -62,13 +80,15 @@ public class TimerViewAdapter extends RecyclerView.Adapter<TimerViewAdapter.View
 
        holder.getTxtTime().setText(time);
         holder.getTxtTitle().setText(title);
-        holder.getASwitch().setChecked(isRunning);
+        if(isRunning)holder.getASwitch().setImageResource(R.drawable.pause);
+        else holder.getASwitch().setImageResource(R.drawable.play);
+
+
     }
 
     @Override
     public int getItemCount() {
         return this.timers.size();
     }
-
 
 }

@@ -19,6 +19,8 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import java.text.ParseException;
@@ -29,6 +31,7 @@ import be.lennert.werkstuk.adapters.IngredientListViewAdapter;
 import be.lennert.werkstuk.adapters.TimerViewAdapter;
 import be.lennert.werkstuk.model.Timer;
 import be.lennert.werkstuk.model.dbmodels.DBCardIngredient;
+import be.lennert.werkstuk.model.interfaces.ITimerClickListener;
 import be.lennert.werkstuk.services.TimerService;
 import be.lennert.werkstuk.utils.StringUtils;
 
@@ -76,9 +79,8 @@ public class MainFragmentTimer extends Fragment {
                 filter
         );
 
-        // Set Listener on btn => form page
+        // Set Listeners
         getView().findViewById(R.id.btnToTimerForm).setOnClickListener(toFormNewTimer());
-
         //setup view
         loadView();
     }
@@ -93,7 +95,7 @@ public class MainFragmentTimer extends Fragment {
         recyclerView.setVisibility(View.VISIBLE);
         emptyView.setVisibility(View.GONE);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        TimerViewAdapter adapter = new TimerViewAdapter(timers);
+        TimerViewAdapter adapter = new TimerViewAdapter(timers,playPauseTimer());
         recyclerView.setAdapter(adapter);
     }
 
@@ -141,6 +143,20 @@ public class MainFragmentTimer extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), TimerFormActivity.class);
                 startActivity(intent);
+            }
+        };
+    }
+
+
+
+    public ITimerClickListener playPauseTimer() {
+       return new ITimerClickListener() {
+            @Override
+            public void ITimerClickListener(int position) {
+                Timer t = timers.get(position);
+
+                if(t.isPaused())t.start(getContext(),getActivity());
+                else t.pause(getActivity());
             }
         };
     }
