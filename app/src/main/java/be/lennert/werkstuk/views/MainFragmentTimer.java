@@ -125,7 +125,7 @@ public class MainFragmentTimer extends Fragment {
                     timers.get(id).setUITime(timeInMillis);
                     adapter.updateData(timers.get(id));
                     adapter.notifyItemChanged(id);
-                    adapter.notifyDataSetChanged();
+
                 }else {
                     //
                 }
