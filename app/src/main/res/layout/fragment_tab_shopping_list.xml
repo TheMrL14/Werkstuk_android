@@ -3,18 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".views.MainFragmentShoppingList">
+    tools:context=".views.MainFragmentShoppingList"
+    android:layout_marginBottom="60dp">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
+
        >
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvShoppingList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
             >
 
         </androidx.recyclerview.widget.RecyclerView>
@@ -26,11 +29,12 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="15dp"
+            android:layout_marginBottom="60dp"
             android:background="@drawable/button_bg"
             android:paddingHorizontal="50dp"
             android:text="@string/ClearList"
             android:textColor="@color/white"
-            android:layout_marginBottom="100dp"/>
+           />
     </LinearLayout>
 
     <TextView

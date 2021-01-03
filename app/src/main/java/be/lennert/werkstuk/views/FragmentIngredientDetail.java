@@ -93,6 +93,7 @@ public class FragmentIngredientDetail extends Fragment {
 
     //upload list to Database ()
     private void uploadToDb(final List<DBCardIngredient> list){
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -104,7 +105,7 @@ public class FragmentIngredientDetail extends Fragment {
                     }
                 });
             }
-        });
+        }).start();
     }
 
     private Observer<List<DBCardIngredient>> uploadObserver(){

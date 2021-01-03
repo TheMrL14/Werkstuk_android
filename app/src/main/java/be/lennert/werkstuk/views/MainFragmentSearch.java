@@ -1,5 +1,6 @@
 package be.lennert.werkstuk.views;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -69,8 +70,9 @@ public class MainFragmentSearch extends Fragment implements ListViewAdapter.List
     }
 
     private String createJokeText(Response<Joke> response) {
+        if(getActivity() == null) return "";
         StringBuilder sb = new StringBuilder();
-        sb.append(getString(R.string.NoFound));
+        sb.append(getActivity().getString(R.string.NoFound));
         sb.append("\n \n");
         sb.append(response.body().getText());
         String text = sb.toString();
